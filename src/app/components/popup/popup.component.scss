@@ -1,0 +1,36 @@
+
+//.line {
+//  height: 2px;
+//  background-color: var(--main_color_1);
+//  overflow: hidden;
+//  position: absolute;
+//  width: 100%;
+//  top: 0;
+//}
+
+.popup_box {
+  height: 377px;
+  width: 100%;
+  position: fixed;
+  overflow: hidden;
+  background-color: var(--main_background_color);
+  top: 28%;
+  z-index: 1;
+  transition-duration: 250ms;
+  border: none;
+  border-top: solid;
+  border-top-width: 2px;
+  border-color: var(--main_color_1);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+ 
+}
+::selection {
+  background: var(--main_color_1);
+}
+.collapsed {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  top: 99.6%;
+  transition-duration: 250ms;
+}

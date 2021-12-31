@@ -1,0 +1,14 @@
+
+  <!-- If wallet is initialized, we show the web walled stuff. -->
+  <div [ngClass]="pages.page == currentPage.WALLET ? 'show' : 'hide'">
+    <div class="inner_flex_container" style="justify-content: center; align-content: center;">
+  
+      <app-nav-menu></app-nav-menu>
+      
+    </div>
+  </div>
+  <!-- When we need to initialize the wallet -->
+  <div [ngClass]="pages.page == currentPage.INITIALIZE_WALLET ? 'show' : 'hide'">
+    <app-onboarding (generateWalletEvent)="updateWalletStatus()"></app-onboarding>
+  </div>
+<router-outlet></router-outlet>

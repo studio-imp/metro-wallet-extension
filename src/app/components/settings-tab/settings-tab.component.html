@@ -1,0 +1,26 @@
+<div class="container_flex" style="flex-direction: column;">
+    <div class="inner_container_flex" style="flex-direction: column; justify-content: space-evenly;">
+        <div class="shadow_box">
+            <h1 style="color: var(--main_color_1); font-weight: normal; margin-bottom: 12px; margin-top: 20px;"> Network Settings </h1>
+    
+            <h3 style="text-align: center; color: var(--main_color_1); width: 100%; margin: 18px;"> ~ Select Network ~ </h3>
+            
+            <app-chain-id-selection *ngIf="walletState != null"
+            [currentChainID]="walletState.nodeDetails.CHAIN_ID"
+            (changeChainID)="updateChainID($event)">
+            </app-chain-id-selection>
+        </div>
+    
+        <div class="shadow_box">
+            <h1 style="color: var(--main_color_1); font-weight: normal; margin-bottom: 12px; margin-top: 20px;"> Clear Data </h1>
+        
+            <div style="margin: 10px;">
+                <app-default-button [height]="35" [width]="170" (buttonClick)="clearTxHistory()" text="Clear Tx History" > </app-default-button>
+            </div>
+            <div style="margin: 10px;">
+                <app-default-button [height]="35" [width]="170" (buttonClick)="resetWallet()" text="Reset Wallet" > </app-default-button>
+            </div>
+        </div>
+    </div>
+
+</div>

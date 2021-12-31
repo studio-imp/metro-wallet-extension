@@ -1,0 +1,30 @@
+<div class="container_flex" style="flex-direction: column; width: auto; height: auto; justify-content: space-evenly;">
+    <h4 style="margin: 4px;">Current ChainID: {{currentChainID}} </h4>
+    <div class="container_flex" style="flex-direction: row; padding-left: 8px;"> 
+
+        <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
+
+            <div (click)="selectNetworkRaw(43114)"[ngClass]="currentChainID == 43114 ? 'selected_box' : ''" class="container_flex network_box" style="height: 35px; width: 85px; font-weight: bold;">
+                Main-Net
+            </div>
+            
+        </div>
+
+        <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
+
+            <div (click)="selectNetworkRaw(43113)" [ngClass]="currentChainID == 43113 ? 'selected_box' : ''" class="container_flex network_box" style="height: 35px; width: 85px; font-weight: bold;">
+                Test-Net
+            </div>
+
+        </div>
+
+        <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
+
+            <div (click)="newCustomNetwork($event)" [ngClass]="currentChainID != 43113 && currentChainID != 43114 ? 'selected_box' : ''" class="container_flex network_box" style="height: 35px; width: 85px; font-weight: bold;">
+                <input class="network_input_box" (blur)="newCustomNetwork($event)" (keyup)="newCustomNetwork($event)" type="number" placeholder="Custom">
+            </div>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,18 @@
+.pin_input {
+    padding: 5px;
+    background-color: rgba(0,0,0,0);
+    border-width: 2px;
+    border-color: var(--main_color_1);
+    border-style: hidden;
+    color: white;
+    border-bottom-style: solid;
+    margin: 6px;
+    text-align: center;
+    background-color: rgb(15,15,15);
+    border-radius: 5px;
+
+    font-size: 18px;
+}
+input:focus{
+    outline: none;
+}

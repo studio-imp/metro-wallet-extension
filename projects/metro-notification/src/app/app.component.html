@@ -1,0 +1,29 @@
+<div *ngIf="currentWalletStage == walletStages.UNLOCKED" class="flex_container" style="justify-content: center; align-items: center; width: 100vw; height: 100vh; z-index: 1;">
+  <div class="background" style=" background: url('../assets/xavaxBackgroundLowRes.png');">
+  </div>
+  <!-- Having one component for everything is very temporary, its a hacky temporary UI solution, most of this UI
+  will be completely replaced in the near future. -->
+    <app-notification-module [titleText]="notificationTitle"
+    (approveButtonClick)="approve($event)"
+    (rejectButtonClick)="reject()"
+    (returnButtonClick)="closePopup()"
+    [fromText]="notificationSource"
+    [requestText]="notificationText"
+    [infoBoxText]="infoBoxText"
+    [currentNotification]="currentNotification"
+    [txData]="txNotificationData"
+    [evmTx]="currentTx"
+    [walletState]="wallet"
+    [txHash]="txHash">
+    </app-notification-module>
+
+</div>
+
+<div *ngIf="currentWalletStage == walletStages.PINCODE || currentWalletStage == walletStages.PASSWORD_AND_PINCODE ">
+  <app-unlock-wallet-page [seedStage]="currentWalletStage" [encryptedSeed]="encryptedSeedData"
+  (onSeedDecrypt)="initWallet($event)">
+  </app-unlock-wallet-page>
+</div>
+
+
+<router-outlet></router-outlet>

@@ -1,0 +1,35 @@
+
+<!--
+    
+    <div [ngSwitch]="popupState">
+    
+    <div>
+-->
+<div class="popup_box" [ngClass]="showPopup == false ? 'collapsed' : ''">
+    
+    <div [ngSwitch]="popupState">
+
+        <app-send-popup *ngSwitchCase="currentPopup.SEND_POPUP"
+        [tokenArray]="tokenArray"
+        [currentAvaxAmount]="currentAvaxAmount"
+        [walletState]="walletState"
+        [isPopupOpen]="showPopup">
+        </app-send-popup>
+
+        <app-connect-popup *ngSwitchCase="currentPopup.CONNECT_POPUP"
+        [connectedPorts]="connectedPorts"
+        (openConnectionModalEvent)="openConnectionModal($event)">
+        </app-connect-popup>
+
+        <div *ngSwitchDefault style="display: flex; justify-content: center; align-items: center;">
+            <h4 style="width: 200px;">
+                This text is not supposed to be possible, ask the
+                devs if they can do something.
+            </h4>
+        </div>
+    </div>
+
+    <app-default-button text="⌄" (click)="closePopupButton()"style="text-align: center; width: 300px; height: 30px; position: absolute; top: 20px; left: 6%;">
+    </app-default-button>
+    <div class="line"> </div>
+</div>

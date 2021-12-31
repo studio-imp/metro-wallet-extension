@@ -1,0 +1,41 @@
+.clicky_button {
+  border-radius: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 5px;
+  padding-bottom: 4px;
+  color: white;
+
+  font-family: Rounded-Elegance;
+  font-weight: bold;
+  font-size: 13px;
+
+  border: hidden;
+  transition-duration: 25ms;
+
+  text-align: center;
+
+  background: var(--main_background_color);
+  //background: rgb(15, 15, 15);
+  box-shadow: -2px 2px 0px var(--main_color_1);
+
+  -webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+
+  height: 35px;
+  width: 100%;
+}
+.clicky_button:hover {
+  box-shadow: -2px 2px 0px rgb(177, 0, 44);
+  transition-duration: 80ms;
+  cursor: pointer;
+  color: rgb(177, 0, 44);
+}
+.clicky_button:active {
+  box-shadow: -1px 1px 0px rgb(177, 0, 44);
+  transform: translate(-1px, 1px);
+  transition-duration: 25ms;
+  color: rgb(177, 0, 44);
+}

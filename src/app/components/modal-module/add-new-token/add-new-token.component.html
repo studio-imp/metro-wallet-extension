@@ -1,0 +1,60 @@
+<div class="container_flex" style="justify-content: flex-start;">
+    <div style="margin: 10px; margin-top: 15px; margin-bottom: 25px;">
+        <h1>Add Token</h1>
+        <hr>
+    </div>
+    <div class="shadow_box" style="margin: 10px; box-shadow: 0px 0px 7px black; height: 46.5px;">
+        <app-input-fancy style="justify-self: center;"
+        inputType="" placeholder="Enter Token Address"
+        [inputWidth]="245"[inputHeight]="28"
+        (inputTextEvent)="tokenAddressInput($event)">
+        </app-input-fancy>
+
+        <h4 *ngIf="currentSearchState == searchStates.NO_ADDRESS">
+            Enter a token address
+        </h4>
+        <h4 *ngIf="currentSearchState == searchStates.FAULTY_ADDRESS" class="glowyText">
+            Please enter a valid address (╬◣﹏◢)
+        </h4>
+        <h4 *ngIf="currentSearchState == searchStates.SEARCHING">
+            Searching for token...   („• ֊ •„)
+        </h4>
+        <h4 *ngIf="currentSearchState == searchStates.NO_TOKEN_FOUND">
+            No token has been found in the network.
+        </h4>
+    </div>
+    
+    <div *ngIf="currentSearchState == searchStates.SEARCHING" class="lds-ripple" style="margin-top: 35px; margin-right: 5px;"><div></div><div></div></div>
+    <div *ngIf="currentSearchState == searchStates.TOKEN_FOUND"
+    style="display: flex; margin: 10px;  height: 98px; width: 300px; justify-content: left; align-content: left; flex-direction: column;">
+        <h3 style="margin: 8px; margin-bottom: 13px; text-align: left; font-weight: normal; font-size: 16px;">
+            Name: <span class="glowyText">{{tokenName}}</span>
+        </h3>
+        <h3 style="margin: 8px; margin-bottom: 13px; text-align: left; font-weight: normal; font-size: 16px;">
+            Symbol: <span class="glowyText">{{tokenSymbol}}</span>
+        </h3>
+        <h3 style="margin: 8px; margin-bottom: 13px; text-align: left; font-weight: normal; font-size: 16px;">
+            Decimals: <span class="glowyText">{{tokenDecimals}}</span>
+        </h3>
+    </div>
+    <div style="margin-top: 95px; width: 280px;">
+        <h4 *ngIf="currentSearchState == searchStates.TOKEN_FOUND">
+            Anyone can create tokens, so make sure the token-address is correct.
+        </h4>    
+    </div>
+    <!--
+        <div class="shadow_box" style="display: flex; margin: 10px; box-shadow: 0px 0px 7px black; height: 98px; justify-content: center; align-content: center;">
+            
+        </div>
+
+    -->
+    <div style="position: absolute; left: 5px; top: 440px;">
+        <div style="display: flex; width: 320px; justify-content: space-evenly;">
+            <app-default-button [height]="35" [width]="135" (buttonClick)="closeModal()" text="Close">
+            </app-default-button>
+            <app-default-button *ngIf="currentSearchState == searchStates.TOKEN_FOUND"
+            [height]="35" [width]="135"  text="Add" (buttonClick)="addToken()">
+            </app-default-button>
+        </div>
+    </div>
+</div>

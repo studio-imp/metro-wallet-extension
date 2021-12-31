@@ -2,18 +2,25 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "stream": [ "./node_modules/stream-browserify"],
+      "crypto": [ "./node_modules/crypto-browserify"],
+      "buffer": ["./node_modules/buffer"]
+    },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns":  true,
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2017",
@@ -27,6 +34,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictTemplates": true,
+    "allowSyntheticDefaultImports": true
   }
 }

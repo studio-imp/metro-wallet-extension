@@ -20,6 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
             "outputPath": "dist/metro-wallet-extension",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -28,7 +29,9 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/manifest.json",
+              "src/MetroTokenList.json"
             ],
             "styles": [
               "src/styles.scss"
@@ -37,16 +40,24 @@
           },
           "configurations": {
             "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1000kb",
+                  "maximumError": "3mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "5kb",
+                  "maximumError": "10kb"
                 }
               ],
               "fileReplacements": [
@@ -100,6 +111,230 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "metroWeb": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/metro-web",
+      "sourceRoot": "projects/metro-web/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
+            "outputPath": "dist/metro-wallet-extension/metroWeb",
+            "index": "projects/metro-web/src/index.html",
+            "main": "projects/metro-web/src/main.ts",
+            "polyfills": "projects/metro-web/src/polyfills.ts",
+            "tsConfig": "projects/metro-web/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/metro-web/src/favicon.ico",
+              "projects/metro-web/src/assets"
+            ],
+            "styles": [
+              "projects/metro-web/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/metro-web/src/environments/environment.ts",
+                  "with": "projects/metro-web/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "metroWeb:build:production"
+            },
+            "development": {
+              "browserTarget": "metroWeb:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "metroWeb:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/metro-web/src/test.ts",
+            "polyfills": "projects/metro-web/src/polyfills.ts",
+            "tsConfig": "projects/metro-web/tsconfig.spec.json",
+            "karmaConfig": "projects/metro-web/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/metro-web/src/favicon.ico",
+              "projects/metro-web/src/assets"
+            ],
+            "styles": [
+              "projects/metro-web/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "metroNotification": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/metro-notification",
+      "sourceRoot": "projects/metro-notification/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
+            "outputPath": "dist/metro-wallet-extension/metroNotification",
+            "index": "projects/metro-notification/src/index.html",
+            "main": "projects/metro-notification/src/main.ts",
+            "polyfills": "projects/metro-notification/src/polyfills.ts",
+            "tsConfig": "projects/metro-notification/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/metro-notification/src/favicon.ico",
+              "projects/metro-notification/src/assets"
+            ],
+            "styles": [
+              "projects/metro-notification/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2000kb",
+                  "maximumError": "3mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "5kb",
+                  "maximumError": "15kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/metro-notification/src/environments/environment.ts",
+                  "with": "projects/metro-notification/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "metroNotification:build:production"
+            },
+            "development": {
+              "browserTarget": "metroNotification:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "metroNotification:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/metro-notification/src/test.ts",
+            "polyfills": "projects/metro-notification/src/polyfills.ts",
+            "tsConfig": "projects/metro-notification/tsconfig.spec.json",
+            "karmaConfig": "projects/metro-notification/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/metro-notification/src/favicon.ico",
+              "projects/metro-notification/src/assets"
+            ],
+            "styles": [
+              "projects/metro-notification/src/styles.scss"
             ],
             "scripts": []
           }

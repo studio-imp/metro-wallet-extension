@@ -1,0 +1,12 @@
+<div [ngClass]="showModal == true ? '' : 'modal_disabled'" class="modal_background">
+
+    <app-add-new-token *ngIf="currentModal == modals.ADD_TOKEN"
+    (closeModalButton)="closeModal()">
+    </app-add-new-token>
+
+    <app-view-connection-info *ngIf="currentModal == modals.VIEW_CONNECTION_INFO"
+    (closeModalButton)="closeModal()"
+    (deleteConnectionButton)="deleteConnection($event)"
+    [port]="connectionInfoPort">
+    </app-view-connection-info>
+</div>

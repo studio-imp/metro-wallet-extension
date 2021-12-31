@@ -1,1 +1,93 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: Rounded-Elegance;
+    src: url(./assets/fonts/Rounded_Elegance.ttf);
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  /*
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  */
+  
+  font-family: Rounded-Elegance;
+  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  min-width: 345px;
+  min-height: 525px;
+
+  max-width: 345px;
+  max-height: 525px;
+  
+  --darker_background_color: rgb(38, 38, 38);
+  --main_background_color: rgb(22, 22, 22);
+  
+  --main_color_1: rgb(255, 0, 64);
+  --main_color_2: #18FF6A;
+  --shadow_size: 3px;
+  --shadow_color: rgb(9, 9, 9);
+
+  color: white;
+  background-color: var(--main_background_color);
+
+  overflow: hidden;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+h4 {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+* {
+  scrollbar-width: 0px;
+  scrollbar-color: var(--main_background_color) var(--darker_background_color);
+}
+*::-webkit-scrollbar {
+  width: 0px;               /* width of the entire scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--main_background_color);
+  border-radius: 0px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--darker_background_color);
+  border-radius: 20px;
+  border: 0px solid var(--darker_background_color);
+}
+h2 {
+  margin: 2px;
+  padding: 2px;
+}
+h1 {
+  margin: 2px;
+  padding: 2px;
+}
+h5 {
+  margin: 2px;
+  padding: 2px;
+}
+
+::selection {
+  background: var(--main_color_1);
+}
+  

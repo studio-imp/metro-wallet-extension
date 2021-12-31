@@ -1,0 +1,14 @@
+<div style="display: flex; flex-direction: column; box-sizing: border-box; width: auto;">
+
+    <div (click)="clickModule()" class="module_box">
+        <img class="module_icon" src="./assets/icons/send_icon.png"> <!-- this icon is shit, I know... its temporary! -->
+        <div class="left_label">
+            {{transaction.txType}}
+        </div>
+        <div class="right_label">
+            {{transaction.txAmount}} {{transaction.assetSymbol}}
+        </div>
+    </div>
+    <h4 style="margin: 3px;"> {{transaction.transactionDate}} </h4>
+    <div class="vertical_seperator"> </div>
+</div>

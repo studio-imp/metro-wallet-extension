@@ -1,0 +1,41 @@
+input {
+  margin: 8px;
+  background-color: var(--darker_background_color);
+  border-color: var(--main_color_1);
+
+  border-style: none;
+  border-right-style: solid;
+  border-left-style: solid;
+  outline: none;
+
+  font-family: Rounded-Elegance;
+
+  box-shadow: 0px 0px 5px inset var(--main_background_color);
+
+  border-radius: 2px;
+  text-align: center;
+  height: 27px;
+  width: 260px;
+  color: white;
+  transition-duration: 110ms;
+}
+input:hover {
+  transition-duration: 110ms;
+  background-color: rgb(29, 29, 29);
+}
+input:focus {
+  transition-duration: 110ms;
+  transition-duration: 110ms;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    transition-duration: 110ms;
+  -webkit-appearance: none;
+}
+input {
+  -moz-appearance: textfield;
+}
+
+.faulty_value {
+  color: rgb(255, 0, 76);
+}

@@ -1,0 +1,30 @@
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -60px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  margin-bottom: 10px;
+ 
+
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+::selection {
+  background: var(--main_color_1);
+}
+
+

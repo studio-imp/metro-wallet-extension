@@ -1,0 +1,172 @@
+<div class="container_flex" style="height: 100vh; width: 100vw; align-items: center; justify-content: center;">
+
+
+    <div *ngIf="isTxSent == false" class="shadow_box"
+        style="display: flex; height: 95%; width:95%; justify-content: flex-start; margin-bottom: 0px; align-items: center; box-sizing: border-box; flex-direction: column;">
+
+
+        <h2 style="margin-top: 15px; margin-bottom: 25px; align-self: center; text-align: center; margin-left: 5px; margin-right: 5px;">
+            {{titleText}}
+        </h2>
+        <div style="width: 92%;">
+
+            <div class="text_box" style="width:100%;  box-sizing: border-box; margin-bottom: 10px; justify-self: flex-start;">
+                <h3 style="margin: 7px; width: auto; text-align: left;">
+                    Request Source: <br> <span class="glowyText"> {{fromText}} </span> <br>
+                </h3>
+                <h3 style="margin: 7px; width:auto; text-align: left;">
+                    Request: <br> <span class="glowyText"> {{requestText}} </span>
+                </h3>
+            </div>
+
+            <div [ngSwitch]="currentNotification.notification">
+                <div *ngSwitchCase="notifications.APPROVE_CONNECTION" class="text_box"
+                    style="width:100%; box-sizing: border-box; margin-bottom: 5px; word-spacing: 1px; text-indent: 2.7px;">
+
+                    <div class="glowyText" style="font-size: 16px; text-align: center;">If you Approve:</div>
+                    <div style="text-align: left; margin: 7px; font-size: 14px;">
+                        <span class="glowyText"> {{fromText}} </span> will have access to your Addresses and be able
+                        to issue transaction
+                        requests <em>which you can either reject or approve in a popup.</em> <br> <br>
+                        <span class="glowyText">Always</span> verify requests and
+                        <span class="glowyText">never</span> approve/sign transactions that you do not trust!
+                    </div>
+
+
+                </div>
+                <div *ngSwitchCase="notifications.ISSUE_TRANSACTION">
+
+                    <div *ngIf="txData != null && txData.txType == txTypes.SWAP_EXACT_AVAX_FOR_TOKENS">
+                        <div>
+                            <h3 class="text_box"
+                                style="text-align: center; align-self: center; font-size: 16px; text-indent: 5px;">
+                                Swap <span class="glowyText">{{txData.avaxAmountToSend}}</span> AVAX <br>
+                                For at least <span class="glowyText">{{txData.tokenAmountToGet}}</span> Tokens
+                            </h3>
+                        </div>
+                    </div>
+
+                    <div *ngIf="txData != null && txData.txType == txTypes.SWAP_EXACT_TOKENS_FOR_AVAX">
+                        <div>
+                            <h3 class="text_box"
+                                style="text-align: center; align-self: center; font-size: 16px; text-indent: 5px;">
+                                Swap <span class="glowyText">{{txData.tokenAmountToSend}}</span> Tokens <br>
+                                For at least <span class="glowyText">{{txData.avaxAmountToGet}}</span> AVAX
+                            </h3>
+                        </div>
+                    </div>
+                    <div *ngIf="txData == null" >
+                        <h4  class="text_box"
+                        style="text-align: center; font-size: 13px; align-self: center;">
+                        Issue an unknown transaction to the network. <br> <br>
+                        Make sure that the source <span class="glowyText">{{fromText}}</span> is correct before
+                        approving.
+                    </h4>
+                </div>
+                
+                <app-fee-box *ngIf="gasRecomendation.priorityFee != 'loading'"
+                (selectGasPrice)="selectGasPrice($event)"
+                [priorityGasPrice]="gasRecomendation.priorityFee"
+                [baseGasPrice]="gasRecomendation.baseFee"
+                [estimatedTxFee]="gasRecomendation.estimatedTxFee">
+                </app-fee-box>
+
+                </div>
+                
+
+                <h4 *ngSwitchDefault class="text_box" style="text-align: center; font-size: 13px; align-self: center;">
+                    This text is not possible, can the devs to do something.
+                </h4>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="isTxSent == false && currentNotification.notification != notifications.ISSUE_TRANSACTION" class="shadow_box"
+        style="display: flex; height: 50px; width:95%; justify-content: space-evenly; align-items: center;">
+        <app-default-button (buttonClick)="rejectButton()" [height]="32" [width]="150" text="{{rejectButtonText}}">
+        </app-default-button>
+        <app-default-button (buttonClick)="approveButton()" [height]="32" [width]="150" text="{{approveButtonText}}">
+        </app-default-button>
+    </div>
+    
+    <div *ngIf="isTxSent == false && gasRecomendation.priorityFee != 'loading' && currentNotification.notification == notifications.ISSUE_TRANSACTION" class="shadow_box"
+        style="display: flex; height: 50px; width:95%; justify-content: space-evenly; align-items: center;">
+        <app-default-button (buttonClick)="rejectButton()" [height]="32" [width]="150" text="{{rejectButtonText}}">
+        </app-default-button>
+        <app-default-button (buttonClick)="approveButton()" [height]="32" [width]="150" text="Send">
+        </app-default-button>
+    </div>
+
+    <div *ngIf="isTxSent == false && gasRecomendation.priorityFee == 'loading' && currentNotification.notification == notifications.ISSUE_TRANSACTION" class="shadow_box"
+        style="display: flex; height: 50px; width:95%; justify-content: space-evenly; align-items: center;">
+        <h3> Estimating Fees</h3>
+    </div>
+
+
+
+        <div *ngIf="isTxSent == true" class="shadow_box"
+        style="display: flex; height: 95%; width:95%; justify-content: flex-start; margin-bottom: 0px; align-items: center; box-sizing: border-box; flex-direction: column;">
+
+
+        <h2 style="margin-top: 15px; margin-bottom: 25px; align-self: center; text-align: center; margin-left: 5px; margin-right: 5px;">
+            Transaction Submitted
+        </h2>
+        <div style="width: 92%;">
+
+            <div class="text_box" style="width:100%;  box-sizing: border-box; margin-bottom: 10px; justify-self: flex-start;">
+
+                <div style="margin: 7px; width: auto; text-align: left;">
+                    <h3>Transaction ID:</h3>
+                    <div class="glowyText" style="font-size: 13px; overflow-wrap: break-word;"> 
+                        {{txHash}}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="text_box"
+                    style="width:100%; box-sizing: border-box; margin-bottom:10px; word-spacing: 1px; text-indent: 2.7px;">
+                    <!--
+                        <div class="glowyText" style="font-size: 16px; text-align: center;"></div>
+                    -->
+                    <div style="text-align: center; margin: 7px; font-size: 14px;">
+                        Your transaction has been sent to the network.
+                    </div>
+                    <div style="text-align: center; margin: 7px; font-size: 16px;">
+                        Tx Time: <span class="glowyText">{{timeUntilTxFinal}}</span>s 
+                    </div>
+                </div>
+
+                <div class="text_box"
+                style="width:100%; box-sizing: border-box; margin-bottom: 10px; word-spacing: 1px; text-indent: 2.7px;">
+                <!--
+                    <div class="glowyText" style="font-size: 16px; text-align: center;"></div>
+                -->
+
+                <div style="text-align: center; margin: 7px; font-size: 18px;">
+                    Transaction State:
+                </div>
+                <div style="text-align: center; margin: 7px; font-size: 18px;">
+                    <span class="glowyText" *ngIf="currentTxState == txStates.SUCCESS"> Success </span>
+                    <span class="glowyText" *ngIf="currentTxState == txStates.FAILED"> Failed </span>
+                    <span class="glowyText" *ngIf="currentTxState == txStates.PENDING"> Pending </span>
+                </div>
+
+                <div *ngIf="currentTxState == txStates.PENDING" class="lds-ripple"><div></div><div></div></div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isTxSent == true" class="shadow_box"
+        style="display: flex; height: 50px; width:95%; justify-content: space-evenly; align-items: center;">
+        <app-default-button (buttonClick)="openInExplorer()" [height]="32" [width]="150" text="View Tx">
+        </app-default-button>
+        <app-default-button (buttonClick)="returnButton()" [height]="32" [width]="150" text="Quit">
+        </app-default-button>
+    </div>
+
+
+</div>

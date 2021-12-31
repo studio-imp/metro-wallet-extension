@@ -1,0 +1,33 @@
+<div class="container_flex" style="justify-content: flex-start; align-items: center; flex-direction: column;">
+
+    <div *ngIf="port != null" style="margin: 10px; margin-top: 15px; margin-bottom: 25px; width: auto;">
+        <h1 style="text-align: center;">{{port.sender.tab.title}}</h1>
+    </div>
+
+    <div *ngIf="port != null" class="container_flex" style="margin: 10px; margin-top: 8px; width: auto; height: auto; flex-direction: column; align-items: center; text-align: center;">
+        <img style="width: 50px; height: 50px;" src="{{port.sender.tab.favIconUrl}}">
+    </div>
+
+    <div *ngIf="port != null"
+    style="display: flex; margin: 10px;  height: auto; width: auto; align-content: left; flex-direction: column;">
+        <h3 style="margin: 8px; margin-bottom: 13px; text-align: center; font-weight: normal; font-size: 16px;">
+            URL: <br> <span class="glowyText">{{port.sender.origin}}</span>
+        </h3>
+        <h3 style="margin: 8px; margin-bottom: 13px; text-align: center; font-weight: normal; font-size: 16px;">
+            Tab ID: <br> <span class="glowyText">{{port.sender.tab.id}}</span>
+        </h3>
+        <h4 style="margin: 8px; margin-top: 18px; text-align: center; font-weight: normal; font-size: 13px;">
+            Consider closing connections you aren't using by pressing the <span class="glowyText">Delete</span> button below.
+        </h4>
+    </div>
+
+    <div style="position: absolute; left: 5px; top: 440px;">
+        <div style="display: flex; width: 320px; justify-content: space-evenly;">
+            <app-default-button
+            [height]="35" [width]="135"  text="Delete" (buttonClick)="deleteConnection()">
+            </app-default-button>
+            <app-default-button [height]="35" [width]="135" (buttonClick)="closeModal()" text="Return">
+            </app-default-button>
+        </div>
+    </div>
+</div>

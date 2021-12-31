@@ -1,0 +1,51 @@
+.clicky_button {
+  background: var(--darker_background_color);
+  border-radius: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-top: 5px;
+  padding-bottom: 4px;
+  color: white;
+
+  margin: 5px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  font-family: Rounded-Elegance;
+  font-weight: bold;
+  font-size: 13px;
+
+  border: hidden;
+  transition-duration: 125ms;
+
+  text-align: center;
+
+  background-color: var(--main_background_color);
+
+
+  -webkit-user-select: none;  
+  -moz-user-select: none;    
+  -ms-user-select: none;      
+  user-select: none;
+
+  outline: none;
+
+  height: 25px;
+  width: 100%;
+}
+.clicky_button:hover{
+  transition-duration: 125ms;
+  cursor: pointer;
+  color:  var(--main_color_1);
+  text-shadow: 0px 0px 12px rgb(255, 19, 117);
+}
+.clicky_button:active {
+  transition-duration: 125ms;
+  color: rgb(184, 0, 61);
+}
+
+.selected {
+  transition-duration: 125ms;
+  cursor: pointer;
+  color: var(--main_color_1);
+  text-shadow: 0px 0px 12px rgb(255, 19, 117);
+}
