@@ -70,6 +70,7 @@ Metro & xavax is an open-source project, therefore any help in the form of talki
 More about helping out can be found in [The xavax help page](https://xavax.io).
 
 Donations [X-CHAIN]: `X-avax1zd67u0vrazmxu8fhuf0wu6dk9swheun0w6mlce`
+
 Donations [C-CHAIN/EVM]: `0x6379131c0b67cc897dcc1a8a99ba2fd82d2eee7b`
 
 Thanks for the tip!
