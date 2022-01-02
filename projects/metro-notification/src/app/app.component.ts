@@ -195,6 +195,7 @@ export class AppComponent {
         method: 'approveAccess',
         accounts: [this.currentWalletAddress],
         chainId:  '0x' + this.wallet?.nodeDetails.CHAIN_ID.toString(16), //"0xA869", //0xA869 0xA86A,
+        nodeIp: this.wallet?.nodeDetails.IP,
         port: this.currentNotifPort
       });
 

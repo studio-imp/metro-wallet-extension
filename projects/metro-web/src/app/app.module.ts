@@ -8,6 +8,9 @@ import { OnboardingComponent } from './components/onboarding/onboarding.componen
 import { InputFancyComponent } from './components/input-fancy/input-fancy.component';
 import { DefaultButtonComponent } from './components/default-button/default-button.component';
 import { PincodeInputComponent } from './components/pincode-input/pincode-input.component';
+import { GenerateNewWalletComponent } from './components/generate-new-wallet/generate-new-wallet.component';
+import { SeedPhraseBoxComponent } from './components/seed-phrase-box/seed-phrase-box.component';
+import { HoverToDisplayWordComponent } from './components/hover-to-display-word/hover-to-display-word.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { PincodeInputComponent } from './components/pincode-input/pincode-input.
     OnboardingComponent,
     InputFancyComponent,
     DefaultButtonComponent,
-    PincodeInputComponent
+    PincodeInputComponent,
+    GenerateNewWalletComponent,
+    SeedPhraseBoxComponent,
+    HoverToDisplayWordComponent
   ],
   imports: [
     BrowserModule,

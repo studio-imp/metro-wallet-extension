@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 export enum CurrentPages {
   WALLET,
-  
   INITIALIZE_WALLET,
+  CREATE_NEW_WALLET,
 }
 class Pages {
   constructor(public page: CurrentPages) {}
@@ -27,9 +27,12 @@ export class AppComponent {
   constructor(){
     if(localStorage.getItem("Vault") != null) {
       this.pages = new Pages(CurrentPages.WALLET);
-    } else {
+    } else if(localStorage.getItem("GenerateNewWallet") ==  null) {
       this.pages = new Pages(CurrentPages.INITIALIZE_WALLET);
-      //this.pages = new Pages(CurrentPages.WALLET); // debug reasons
+      //this.pages = new Pages(CurrentPages.CREATE_NEW_WALLET); // debug reasons
+    } else {
+      this.pages = new Pages(CurrentPages.CREATE_NEW_WALLET);
+      localStorage.removeItem("GenerateNewWallet");
     }
   }
 

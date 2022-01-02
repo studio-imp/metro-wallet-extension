@@ -1,27 +1,77 @@
-# MetroWalletExtension
+# Metro Wallet - Web version
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.3.
+Metro is a wallet ecosystem for Avalanche. This is the web-version of Metro
+which can easily be used with Apps such as Pangolin or TraderJoe, as Metro currently allows for connecting as metamask, with more better options coming later!
 
-## Development server
+Metro has three branches: `Master`, `Nightly` and `Dev`.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* `Master` - Release builds which are the most stable builds, as well as the builds that are shipped on the chrome extension store.
 
-## Code scaffolding
+* `Nightly` - Builds that won't break easily, but contain the bleeding-edge features that Metro has which aren't tested enough in order to be released.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* `Dev` - Rolling updates, might have broken features and tests... This is the development branch where all the crazy shit happens...
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## A note
+Metro is in alpha stage, this means a lot of cool features are still in the works,
+and there may be plenty of UI changes as well.
 
-## Running unit tests
+Metro is fully Open-source, and made by [xavax](https://xavax.io).
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+There will be a roadmap coming in the near future, highliting future features & updates
+coming to metro.
+___
 
-## Running end-to-end tests
+## Development & Building
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Install dependencies:
+```
+npm install
+```
 
-## Further help
+### Build Metro into `dist` folder
+```
+npm run build
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Since Metro web is made up of various parts including content-scripts which need to be
+built seperately, there are a set of commands you can run to build each part.
+
+### Build Scripts:
+```
+npm run build-scripts
+```
+
+### Build Popup-notifications:
+```
+npm run build-metroNotification
+```
+### Build metroWeb:
+```
+npm run build-metroWeb
+```
+
+* `metroNotification` is the popup you get when you for instance connect to a dApp as metamask, such as
+pangolinDex or traderjoe. The metroNotification component is fairly temporary and will be replaced with
+a better solution later.
+
+* `scripts` is a set of content-scripts, injected scripts, and service workers that run in the background. The scripts are found in the `metro_scripts` directory.
+
+* `metroWeb` is the web-page version of metro that gets opened when the user opens the Dashboard,
+or simply creates/imports a new wallet.
+
+The command `npm run build` will build all of these projects into a ready-to-run Extension.
+
+___
+
+## Support
+Metro & xavax is an open-source project, therefore any help in the form of talking about the projects, giving feed-back as well as donations are well appreciated!
+
+More about helping out can be found in [The xavax help page](https://xavax.io).
+
+Donations [X-CHAIN]: `X-avax1zd67u0vrazmxu8fhuf0wu6dk9swheun0w6mlce`
+Donations [C-CHAIN/EVM]: `0x6379131c0b67cc897dcc1a8a99ba2fd82d2eee7b`
+
+Thanks for the tip!
+
+### Hope you Have a good time, all the time! ~

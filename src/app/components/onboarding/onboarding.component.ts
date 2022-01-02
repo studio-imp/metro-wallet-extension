@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 
 export enum OnboardingTabs {
   MAIN_MENU,
-  CREATE_WALLET,
   HARDWARE_WALLET
 }
 @Component({
@@ -27,6 +26,11 @@ export class OnboardingComponent implements OnInit {
   }
 
   openMetroWeb() {
+    window.open('metroWeb/index.html', '_blank')?.focus();
+  }
+
+  generateNewWallet() {
+    localStorage.setItem("GenerateNewWallet", '{}');
     window.open('metroWeb/index.html', '_blank')?.focus();
   }
 

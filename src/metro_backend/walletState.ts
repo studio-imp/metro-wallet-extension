@@ -72,10 +72,10 @@ export class WalletState {
 
     //Basic node details default to test network
     public nodeDetails = {
-        IP: 'api.avax-test.network',
+        IP: 'api.avax.network',
         PORT: 443,
         NETWORK_ID: 1,
-        CHAIN_ID: 43113,
+        CHAIN_ID: 43114,
         PROTOCOL: 'https'
     }
 

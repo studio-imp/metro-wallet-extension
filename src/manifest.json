@@ -1,7 +1,7 @@
 {
     "name": "Metro Wallet",
-    "version": "0.0.1",
-    "description": "(Alpha) Open-Source Web3 browser wallet made for Avalanche",
+    "version": "0.1.0",
+    "description": "Open-Source Web3 enabled crypto wallet made for Avalanche [Alpha]",
     "manifest_version": 3,
     "homepage_url": "https://xavax.io",
     "background":{

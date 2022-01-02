@@ -1,5 +1,8 @@
 <div (click)="clickModule()" class="module_box">
-    <img class="module_icon" src="{{tokenImgURI}}">
+    
+    <img *ngIf="tokenInfo.tokenLogoURI != '' && tokenInfo.tokenLogoURI != null" class="module_icon" src="{{tokenInfo.tokenLogoURI}}">
+    <img *ngIf="tokenInfo.tokenLogoURI == '' || tokenInfo.tokenLogoURI == null" class="module_icon" src="{{tokenImgURI}}">
+
     <div class="left_label">
         {{tokenInfo.tokenSymbol}}
     </div>

@@ -8,7 +8,7 @@ let currentNotifRequest;
 let currentPopup;
 let currentPort;
 
-let jsonRPCURL = "https://api.avax-test.network:443/ext/bc/C/rpc";
+let jsonRPCURL = "https://api.avax.network:443/ext/bc/C/rpc";
 
 var MetroVault;
 
@@ -167,6 +167,7 @@ self.addEventListener("message", (event) => {
                 chainId: event.data.chainId,
             }
         });
+        jsonRPCURL = "https://" + event.data.nodeIp + ":443/ext/bc/C/rpc";
         self.clients.matchAll({
             includeUncontrolled: true,
             type: 'window',
