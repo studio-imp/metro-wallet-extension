@@ -1,7 +1,7 @@
 {
     "name": "Metro Wallet",
     "version": "0.1.0",
-    "description": "Open-Source Web3 enabled crypto wallet made for Avalanche [Alpha]",
+    "description": "Open-Source Web3 & DeFi enabled wallet for Avalanche",
     "manifest_version": 3,
     "homepage_url": "https://xavax.io",
     "background":{
@@ -9,7 +9,7 @@
         "type": "module"
     },
     "content_scripts":[{
-        "matches": ["http://*/*", "https://*/*", "<all_urls>"],
+        "matches": ["http://*/*", "https://*/*"],
         "js": ["metro_fluid_injector-bundle.js"],
         "run_at": "document_start",
         "all_frames": true,
@@ -17,17 +17,14 @@
     }],
     "web_accessible_resources": [{
         "resources": ["metro_injected_fluids-bundle.js"],
-        "matches": ["<all_urls>"]
+        "matches": ["http://*/*", "https://*/*"]
       }],
     "action": {
         "default_popup": "index.html",
         "default_title": "Metro Wallet"
     },
     "permissions": [
-        "storage",
-        "tabs",
-        "activeTab", 
-        "unlimitedStorage"
+        "clipboardWrite"
       ],
     "icons": {
         "16": "assets/3.png",
