@@ -27,8 +27,8 @@
         "clipboardWrite"
       ],
     "icons": {
-        "16": "assets/3.png",
-        "48": "assets/3.png",
-        "128": "assets/3.png"
+        "16": "assets/TabbyIconSquare.png",
+        "48": "assets/TabbyIconSquare.png",
+        "128": "assets/TabbyIconSquare.png"
     }
 }
