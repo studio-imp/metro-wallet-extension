@@ -80,6 +80,7 @@ self.addEventListener("message", (event) => {
             }
         });
     }
+    
 
     if(event.data && event.data.method == MetroRPC.ADD_TRANSACTION) {
         self.clients.matchAll({
@@ -196,8 +197,66 @@ self.addEventListener("message", (event) => {
 
 function addListenersToPort(port) {
 
+    
+
+
     port.onMessage.addListener((msg) => {
+
+        if(msg.method === EVMRPC.EVM_GET_BALANCE) {
+    
+            let req = new MetroRequest(msg.method, msg.params);
+            req.postJsonRPC(jsonRPCURL).then((response) => {
+                response.json().then((json) => {
+                    port.postMessage({
+                        method: msg.method,
+                        data: json,
+                    });
+                });
+            }).catch((e) => {
+                port.postMessage({
+                    method: msg.method,
+                    data: e,
+                });
+            });
+        }
+        if(msg.method === EVMRPC.EVM_GET_BLOCK_BY_NUMBER) {
+            let req = new MetroRequest(msg.method, msg.params);
+            req.postJsonRPC(jsonRPCURL).then((response) => {
+                response.json().then((json) => {
+                    port.postMessage({
+                        method: msg.method,
+                        data: json,
+                    });
+                });
+            }).catch((e) => {
+                port.postMessage({
+                    method: msg.method,
+                    data: e,
+                });
+            });
+        }
+
+        if(msg.method === EVMRPC.EVM_GAS_PRICE) {
+            let req = new MetroRequest(msg.method, msg.params);
+            req.postJsonRPC(jsonRPCURL).then((response) => {
+                response.json().then((json) => {
+                    port.postMessage({
+                        method: msg.method,
+                        data: json,
+                    });
+                });
+            }).catch((e) => {
+                port.postMessage({
+                    method: msg.method,
+                    data: e,
+                });
+            });
+        }
+
         if(msg.method === EVMRPC.EVM_CALL) {
+            console.log("Evm call start:");
+            console.log(msg);
+            console.log("Evm call end:");
     
             let req = new MetroRequest(msg.method, msg.params);
             req.postJsonRPC(jsonRPCURL).then((response) => {

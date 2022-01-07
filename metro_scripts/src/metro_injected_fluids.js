@@ -24,7 +24,7 @@ let metroState = new MetroState();
 
 //Our event emitter that we'll be using for important things such as JSONRPC requests.
 const ev = new SafeEventEmitter();
-ev.setMaxListeners(500);
+ev.setMaxListeners(800);
 
 
 /* State of the metro injected contents <--> metro backend communication */
@@ -44,6 +44,13 @@ class MetroState {
       this.accounts = newAccounts;
     }
   }
+  /* Change the chainId */
+  changeChain(newChainId){
+    if(this.isConnectedToWallet == true) {
+      ev.emit("chainChanged", newChainId);
+      this.chainId = newChainId;
+    }
+  }
   /* Approve the dApp-Wallet connection, by Approve, we mean telling the dApp about our accounts and allowing RPC calls. */
   approveConnection(chainId, accounts) {
     window.ethereum.chainId = this.chainId;
@@ -57,6 +64,13 @@ class MetroState {
 
     //ev.emit("connect", chainId);
     //ev.emit("changeAccounts", accounts);
+
+    /*
+     
+    if(this.isConnectedToWallet == true) {
+      ev.emit("accountsChanged", accounts);
+    }
+     */
 
     return accounts;
   }
@@ -110,14 +124,23 @@ injectToContentStream.on('data', (data) => {
   if(data.method === "disconnect") {
     metroState.disconnect();
   }
+  if(data.method === "eth_getBlockByNumber") {
+    ev.emit("eth_getBlockByNumber", data.data);
+  }
   if(data.method === "eth_blockNumber") {
     ev.emit("eth_blockNumber", data.data);
+  }
+  if(data.method === "eth_getBalance") {
+    ev.emit("eth_getBalance", data.data);
   }
   if(data.method === "eth_call") {
     ev.emit("eth_call", data.data);
   }
   if(data.method === "eth_estimateGas") {
     ev.emit("eth_estimateGas", data.data);
+  }
+  if(data.method === "eth_gasPrice") {
+    ev.emit("eth_gasPrice", data.data);
   }
   if(data.method === "eth_getTransactionReceipt") {
     ev.emit("eth_getTransactionReceipt", data.data);
@@ -154,7 +177,6 @@ function removeListener(event, callback){
 /* EIP1193 request method, may be a jsonRPC, may be anything :p */
 function request({method, params}) {
 
-
   /*
   if(method == 'eth_accounts') {
 
@@ -172,6 +194,23 @@ function request({method, params}) {
         params: params
       });
       resolve(metroState.chainId);
+    });
+  }
+
+  if(method == 'eth_getBalance') {
+    injectToContentStream.write({
+      method: method,
+      params: params
+    });
+    return new Promise(function(resolve, reject){
+      //Wait for a response for 10 seconds, otherwise we reject.
+      ev.once("eth_getBalance", (responseJson) => {
+        if(responseJson.result != null) {
+          return resolve(responseJson.result);
+        } else {
+          return reject(responseJson);
+        }
+      });
     });
   }
 
@@ -243,11 +282,48 @@ function request({method, params}) {
 
     return new Promise(function(resolve, reject){
       //Wait for a response for 10 seconds, otherwise we reject.
-      ev.prependOnceListener("eth_call", (responseJson) => {
+      ev.prependOnceListener("eth_estimateGas", (responseJson) => {
         if(responseJson.result != null) {
           return resolve(responseJson.result);
         } else {
           return reject(responseJson);
+        }
+      });
+    });
+  }
+
+  if(method === 'eth_gasPrice') {
+    injectToContentStream.write({
+      method: method,
+      params: params
+    });
+
+    return new Promise(function(resolve, reject){
+      //Wait for a response for 10 seconds, otherwise we reject.
+      ev.prependOnceListener("eth_gasPrice", (responseJson) => {
+        if(responseJson.result != null) {
+          return resolve(responseJson.result);
+        } else {
+          return reject(responseJson);
+        }
+      });
+    });
+  }
+
+  if(method === 'eth_getBlockByNumber') {
+    injectToContentStream.write({
+      method: method,
+      params: params
+    });
+    return new Promise(function(resolve, reject){
+      //Wait for a response for 10 seconds, otherwise we reject.
+      ev.prependOnceListener("eth_getBlockByNumber", (responseJson) => {
+        if(responseJson.result != null) {
+          return resolve(responseJson.result);
+        } else {
+          return reject({
+            message: responseJson
+          });
         }
       });
     });
@@ -277,6 +353,27 @@ function request({method, params}) {
       params: params
     });
   }
+
+  //eth_accounts sinply gets the current accounts
+  if(method == 'eth_accounts') {
+
+    return new Promise(function(resolve, reject) {
+
+      if(!metroState.hasRejectedConnection) {
+        setInterval(() => {
+          if(metroState.accounts.length) {
+            return resolve(metroState.accounts);
+          }
+        }, 500);
+      } else {
+        return reject({
+          code: 4001,
+          message: "Metro has Rejected revealing addresses."
+        });
+      }
+    });
+  }
+  
 
   //If the user requests access from the browser Extension & not connect directly from the wallet,
   //We will show a popup modal for: Does the user intend to connect metro to the current App? And

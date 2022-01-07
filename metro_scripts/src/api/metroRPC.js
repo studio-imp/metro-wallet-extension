@@ -41,11 +41,14 @@ export const MetroRPC = {
 
 /* I chose to also have EVM RPC constants, variables named EVM_'METHOD' instead of the ETH prefix since it makes more sense to me. */
 export const EVMRPC = {
+    'EVM_GET_BLOCK_BY_NUMBER': 'eth_getBlockByNumber',
+    'EVM_GET_BALANCE': 'eth_getBalance',
     'EVM_CALL': 'eth_call',
     'EVM_SEND_TRANSACTION': 'eth_sendTransaction',
     'EVM_GET_TRANSACTION_RECEIPT': 'eth_getTransactionReceipt',
     'EVM_ESTIMATE_GAS': 'eth_estimateGas',
     'EVM_BLOCK_NUMBER': 'eth_blockNumber',
+    'EVM_GAS_PRICE': 'eth_gasPrice',
 }
 
 //Just a wrapper for requests to make things easier.
