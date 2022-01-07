@@ -76,6 +76,7 @@ export class MetroRequest {
                 method: this.method,
                 params: this.data,
                 id: 1,
+                jsonrpc: '2.0'
             })
         })
     }

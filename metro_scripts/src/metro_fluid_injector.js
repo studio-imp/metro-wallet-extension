@@ -11,14 +11,14 @@ setupStreams();
 function injectFluids() {
   try {
     var s = document.createElement('script');
-    //s.setAttribute('async', 'false');
+    s.setAttribute('async', 'false');
     s.src = chrome.runtime.getURL('metro_injected_fluids-bundle.js');
     s.onload = function() {
         this.remove();
     };
     (document.head || document.documentElement).appendChild(s);
   }catch (error) {
-    console.error("Failed injecting Metro / Metamask provider");
+    console.error("Failed injecting Metro / EIP1193 provider");
   }
 }
 function setupStreams() {

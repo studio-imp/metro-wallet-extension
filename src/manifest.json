@@ -9,15 +9,15 @@
         "type": "module"
     },
     "content_scripts":[{
-        "matches": ["http://*/*", "https://*/*"],
+        "matches": ["http://*/*", "https://*/*","<all_urls>"],
         "js": ["metro_fluid_injector-bundle.js"],
         "run_at": "document_start",
-        "all_frames": true,
-        "type":"module"
+        "type": "module",
+        "all_frames": true
     }],
     "web_accessible_resources": [{
         "resources": ["metro_injected_fluids-bundle.js"],
-        "matches": ["http://*/*", "https://*/*"]
+        "matches": ["http://*/*", "https://*/*", "<all_urls>"]
       }],
     "action": {
         "default_popup": "index.html",
@@ -27,8 +27,8 @@
         "clipboardWrite"
       ],
     "icons": {
-        "16": "assets/TabbyIconSquare.png",
-        "48": "assets/TabbyIconSquare.png",
-        "128": "assets/TabbyIconSquare.png"
+        "16": "assets/3.png",
+        "48": "assets/3.png",
+        "128": "assets/3.png"
     }
 }

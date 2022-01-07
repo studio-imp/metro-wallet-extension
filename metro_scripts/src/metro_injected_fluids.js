@@ -1,6 +1,6 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-
+import {MetroRequest} from './api/metroRPC.js';
 
 /* --- Note # xavax # we are one @
     metro_injected_fluids.js is an injected script that provides an EIP-1193 provider to the website that
@@ -10,13 +10,25 @@ import SafeEventEmitter from '@metamask/safe-event-emitter';
     metro_contentscript.js. The metro_contentscript.js then uses runtime.postMessage() to communicate to
     the hard_working_metro_worker.js. This worker will then handle all the calls & data, and procede to
     communicate with the wallet backend.
-
-    IMPORTANT:
-    Injecting this into every website allows the website to fingerprint the user by being able to always
-    know if the user has a wallet, in order to stop this, Metro will always require the user to manually
-    select which URIs the wallet should inject the content-scripts to. This might be a slight annoyance,
-    but until a better (xavax-web3-link) API becomes available, its the most sane approach.
 */
+
+//The EIP1193 API at window.ethereum. I hate this, but sadly its what most (basically all) dApps  are using...
+window.ethereum = {
+  isConnected: () => isConnected(),
+  on: (event, callback) => on(event, callback),
+  off: (event, callback) => removeListener(event, callback),
+  removeListener: (event, callback) => removeListener(event, callback),
+  request: ({method, params}) => request({method, params}),
+  sendAsync: (request, callback) => sendAsync(request, callback),
+  addListener: (event, callback) => on(event, callback),
+  enable: () => enable(),
+  send: (...args) => send(...args),
+
+  chainId: "",
+  networkId: "0x1",
+  isMetaMask: true,
+  isMetro: true,
+}
 
 
 //Create a new metroState, this can be viewed as the information the dApp will have about the wallet.
@@ -24,7 +36,7 @@ let metroState = new MetroState();
 
 //Our event emitter that we'll be using for important things such as JSONRPC requests.
 const ev = new SafeEventEmitter();
-ev.setMaxListeners(800);
+ev.setMaxListeners(500);
 
 
 /* State of the metro injected contents <--> metro backend communication */
@@ -32,6 +44,8 @@ class MetroState {
   chainId = "";
   accounts = [];
   isConnectedToWallet = false;
+
+  jsonRPCURL = "";
 
   hasRejectedConnection = false;
 
@@ -52,9 +66,12 @@ class MetroState {
     }
   }
   /* Approve the dApp-Wallet connection, by Approve, we mean telling the dApp about our accounts and allowing RPC calls. */
-  approveConnection(chainId, accounts) {
+  approveConnection(chainId, accounts, jsonRPCURL) {
+    this.jsonRPCURL = jsonRPCURL;
+
     window.ethereum.chainId = this.chainId;
     this.isConnectedToWallet = true;
+
     
     this.chainId = chainId;
     this.accounts = accounts
@@ -116,7 +133,7 @@ const injectToContentStream = new WindowPostMessageStream({
 injectToContentStream.on('data', (data) => {
   if(data.method === "approveAccess") {
     //I know, data.data, leave me alone...
-    metroState.approveConnection(data.data.chainId, data.data.accounts);
+    metroState.approveConnection(data.data.chainId, data.data.accounts, data.data.jsonRpcUrl);
   }
   if(data.method === "rejectAccess") {
     metroState.rejectConnection();
@@ -149,25 +166,6 @@ injectToContentStream.on('data', (data) => {
     ev.emit("eth_sendTransaction", data.data);
   }
 }) 
-
-//A bunch of methods and data at window.etherem following EIP1193.
-window.ethereum = {
-  isConnected: () => isConnected(),
-  on: (event, callback) => on(event, callback),
-  off: (event, callback) => removeListener(event, callback),
-  removeListener: (event, callback) => removeListener(event, callback),
-  request: ({method, params}) => request({method, params}),
-  sendAsync: (request, callback) => sendAsync(request, callback),
-  addListener: (event, callback) => on(event, callback),
-  enable: () => enable(),
-  send: (...args) => send(...args),
-
-  isConnected: true, //
-  chainId: "",
-  networkId: "0x1",
-  isMetaMask: true,
-  isMetro: true,
-}
 
 /* Remove a EIP1193 provider event listener */
 function removeListener(event, callback){
@@ -204,7 +202,7 @@ function request({method, params}) {
     });
     return new Promise(function(resolve, reject){
       //Wait for a response for 10 seconds, otherwise we reject.
-      ev.once("eth_getBalance", (responseJson) => {
+      ev.prependOnceListener("eth_getBalance", (responseJson) => {
         if(responseJson.result != null) {
           return resolve(responseJson.result);
         } else {
@@ -215,6 +213,24 @@ function request({method, params}) {
   }
 
   if(method === 'eth_call') {
+    
+    //Decided to do eth_call's directly here, no reason to not do that here, just less overhead...
+    return new Promise(function(resolve, reject){
+      let req = new MetroRequest(method, params);
+      req.postJsonRPC(metroState.jsonRPCURL).then((response) => {
+          response.json().then((json) => {
+            if(json.result) {
+              return resolve(json.result);
+            } else {
+              return reject(responseJson);
+            }
+          });
+      }).catch((e) => {
+        return reject(e);
+      });
+    }); 
+
+    /* TODO: remove this (kept for reasons...)
     injectToContentStream.write({
       method: method,
       params: params
@@ -222,7 +238,7 @@ function request({method, params}) {
 
     return new Promise(function(resolve, reject){
       //Wait for a response for 10 seconds, otherwise we reject.
-      ev.once("eth_call", (responseJson) => {
+      ev.prependOnceListener("eth_call", (responseJson) => {
         if(responseJson.result != null) {
           return resolve(responseJson.result);
         } else {
@@ -230,6 +246,7 @@ function request({method, params}) {
         }
       });
     });
+     */
   }
   if(method === "eth_sendTransaction") {
     injectToContentStream.write({
@@ -243,7 +260,7 @@ function request({method, params}) {
     return new Promise(function(resolve, reject){
       //Wait for a response for 10 seconds, otherwise we reject.
       ev.prependOnceListener("eth_sendTransaction", (responseJson) => {
-        if(responseJson.result != "REJECT") {
+        if(responseJson != "REJECT" && responseJson.result) {
           return resolve(responseJson.result);
         } else {
           return reject({
@@ -425,18 +442,5 @@ function sendAsync(request, callback) {
   console.error("sendAsync is deprecated... not supported...");
 }
 function isConnected() {
-  return true;
+  return metroState.isConnectedToWallet;
 }
-
-document.addEventListener('click', function (event) {
-    if (event.button == 0 && event.isTrusted)  {
-      //ev.emit("connect", "0xA86A");
-      //ev.emit("chainChanged", "0xA86A");
-      //ev.emit("accountsChanged", ["0xEDED9F503E7b606ae12Aad3617BFC516341f3431"]);
-    }
-})
- 
-
-
-
-

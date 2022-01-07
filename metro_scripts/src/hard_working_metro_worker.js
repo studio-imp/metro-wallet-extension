@@ -166,6 +166,7 @@ self.addEventListener("message", (event) => {
             data: {
                 accounts: event.data.accounts,
                 chainId: event.data.chainId,
+                jsonRpcUrl: "https://" + event.data.nodeIp + ":443/ext/bc/C/rpc",
             }
         });
         jsonRPCURL = "https://" + event.data.nodeIp + ":443/ext/bc/C/rpc";
@@ -254,10 +255,6 @@ function addListenersToPort(port) {
         }
 
         if(msg.method === EVMRPC.EVM_CALL) {
-            console.log("Evm call start:");
-            console.log(msg);
-            console.log("Evm call end:");
-    
             let req = new MetroRequest(msg.method, msg.params);
             req.postJsonRPC(jsonRPCURL).then((response) => {
                 response.json().then((json) => {
@@ -271,9 +268,7 @@ function addListenersToPort(port) {
                     method: msg.method,
                     data: e,
                 });
-            });
-    
-    
+            });    
         }
         //if the injected script calls eth_blockNumber, we'll send it the result the EVM we are connected to sends us with that request.
         if(msg.method === EVMRPC.EVM_BLOCK_NUMBER) {

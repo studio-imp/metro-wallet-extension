@@ -209,8 +209,6 @@ export class AppComponent {
 
       if(this.wallet != null) {
         
-
-
         let signedTx = await this.wallet.signTransaction(data);
         let txHash = await this.wallet.issueRawTransaction(signedTx);
         this.txHash = txHash.data.result;
