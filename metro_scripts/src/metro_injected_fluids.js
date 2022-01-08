@@ -5,7 +5,6 @@ import {MetroRequest} from './api/metroRPC.js';
 /* --- Note # xavax # we are one @
     metro_injected_fluids.js is an injected script that provides an EIP-1193 provider to the website that
     it is injected into. This script is injected by metro_fluid_injector.js.
-
     In order to connect/communicate with the actual metro wallet, we use a stream from this script to the
     metro_contentscript.js. The metro_contentscript.js then uses runtime.postMessage() to communicate to
     the hard_working_metro_worker.js. This worker will then handle all the calls & data, and procede to
@@ -78,6 +77,10 @@ class MetroState {
 
     window.ethereum.chainId = chainId;
     window.ethereum.isConnected = true;
+    
+    if(accounts != this.accounts) {
+      this.changeAccounts(accounts);
+    }
 
     //ev.emit("connect", chainId);
     //ev.emit("changeAccounts", accounts);
@@ -177,7 +180,6 @@ function request({method, params}) {
 
   /*
   if(method == 'eth_accounts') {
-
     return new Promise(function(resolve, reject) {
       resolve([]);
     });
@@ -235,7 +237,6 @@ function request({method, params}) {
       method: method,
       params: params
     });
-
     return new Promise(function(resolve, reject){
       //Wait for a response for 10 seconds, otherwise we reject.
       ev.prependOnceListener("eth_call", (responseJson) => {
@@ -377,12 +378,9 @@ function request({method, params}) {
     return new Promise(function(resolve, reject) {
 
       if(!metroState.hasRejectedConnection) {
-        setInterval(() => {
-          if(metroState.accounts.length) {
-            return resolve(metroState.accounts);
-          }
-        }, 500);
+        return resolve(metroState.accounts);
       } else {
+        metroState.hasRejectedConnection = false;
         return reject({
           code: 4001,
           message: "Metro has Rejected revealing addresses."

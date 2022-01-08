@@ -11,7 +11,7 @@ setupStreams();
 function injectFluids() {
   try {
     var s = document.createElement('script');
-    s.setAttribute('async', 'false');
+    //s.setAttribute('async', 'false');
     s.src = chrome.runtime.getURL('metro_injected_fluids-bundle.js');
     s.onload = function() {
         this.remove();
@@ -32,8 +32,6 @@ function setupStreams() {
   port.onDisconnect.addListener((msg) => {
     if(msg.error) {
       console.warn("Metro-Worker-Messenger Port disconnected: $(msg.error.message)");
-    } else {
-      console.warn("Metro-Worker-Messenger Port disconnected without error message");
     }
     port = extension.runtime.connect({name: "metro-worker-messenger"});
   });
