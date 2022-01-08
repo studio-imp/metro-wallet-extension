@@ -1,31 +1,31 @@
 <div class="container_flex" style="flex-direction: column; width: auto; height: auto; justify-content: space-evenly;">
-    <h4 style="margin: 4px;">Select Price Per Fee <br> estimated fee: {{estimatedTxFee}} AVAX</h4>
+    <h4 style="margin: 6px;">Select Price Per Fee <br> estimated fee: {{estimatedTxFee | number: '0.0-10'}} AVAX</h4>
     <div class="container_flex" style="flex-direction: row; padding-left: 8px;"> 
 
         <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
 
-            <div (click)="selectFee('normal')"[ngClass]="selectedBox == 'normal' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 30px; width: 80px; font-weight: bold;">
-                {{baseGasPrice}} nAvax
+            <div (click)="selectFee('normal')"[ngClass]="selectedBox == 'normal' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 40px; width: 80px; font-weight: bold;">
+                {{baseGasPrice | number: '1.0-3'}} nAvax
             </div>
-            <h4 style="margin: 2px; margin-top: 8px; padding-right: 8px;">normal</h4>
+            <h4 style="margin: 2px; margin-top: 8px; padding-right: 10px;">normal</h4>
 
         </div>
 
         <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
 
-            <div (click)="selectFee('quick')" [ngClass]="selectedBox == 'quick' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 30px; width: 80px; font-weight: bold;">
-                {{priorityGasPrice}} nAvax
+            <div (click)="selectFee('quick')" [ngClass]="selectedBox == 'quick' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 40px; width: 80px; font-weight: bold;">
+                {{priorityGasPrice | number: '1.0-3'}} nAvax
             </div>
-            <h4 style="margin: 2px; margin-top: 8px; padding-right: 8px;">quick</h4>
+            <h4 style="margin: 2px; margin-top: 8px; padding-right: 10px;">quick</h4>
 
         </div>
 
         <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
 
-            <div (click)="selectFee('custom')" [ngClass]="selectedBox == 'custom' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 30px; width: 80px; font-weight: bold;">
+            <div (click)="selectFee('custom')" [ngClass]="selectedBox == 'custom' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 40px; width: 80px; font-weight: bold;">
                 <input class="fee_input_box" (blur)="checkFeeValue($event)" (keyup)="newCustomFee($event)" type="number" name="sendAmount" min="{{baseGasPrice}}" placeholder="nAvax">
             </div>
-            <h4 style="margin: 2px; margin-top: 8px; padding-right: 8px;">custom</h4>
+            <h4 style="margin: 2px; margin-top: 8px; padding-right: 10px;">custom</h4>
 
         </div>
 

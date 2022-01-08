@@ -43,7 +43,7 @@ export class NotificationModuleComponent implements OnInit {
   nonce: number = 0;
   @Input() txHash: string = '';
 
-  timeUntilTxFinal: string = '0';
+  timeUntilTxFinal: number = 0;
 
   txStates = TransactionStates;
   currentTxState: TransactionStates = TransactionStates.PENDING;
@@ -118,9 +118,7 @@ export class NotificationModuleComponent implements OnInit {
   async startTxTimer() {
     setInterval(async () => {
       if(this.isTxSent && this.currentTxState == this.txStates.PENDING) {
-        let currentTime: number = (Number(this.timeUntilTxFinal));
-        currentTime += 0.05;
-        this.timeUntilTxFinal = currentTime.toPrecision(3).toString();
+        this.timeUntilTxFinal += 0.05;
       }
     }, 50);
   }
