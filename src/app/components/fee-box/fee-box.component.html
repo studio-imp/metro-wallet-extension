@@ -5,7 +5,7 @@
         <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
 
             <div (click)="selectFee('normal')"[ngClass]="selectedBox == 'normal' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 30px; width: 80px; font-weight: bold;">
-                {{baseGasPrice}} nAvax
+                {{baseGasPrice | number: '1.0-2'}} nAvax
             </div>
             <h4 style="margin: 2px; margin-top: 8px; padding-right: 8px;">normal</h4>
 
@@ -14,7 +14,7 @@
         <div class="container_flex" style="flex-direction: column; width: auto; height: auto;">
 
             <div (click)="selectFee('quick')" [ngClass]="selectedBox == 'quick' ? 'selected_box' : ''" class="container_flex fee_box" style="height: 30px; width: 80px; font-weight: bold;">
-                {{priorityGasPrice}} nAvax
+                {{priorityGasPrice | number: '1.0-2'}} nAvax
             </div>
             <h4 style="margin: 2px; margin-top: 8px; padding-right: 8px;">quick</h4>
 
