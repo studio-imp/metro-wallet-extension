@@ -18,13 +18,16 @@ export class SendTabComponent implements OnInit {
   @Input() avaxAmount: string = "0.00";
   @Input() currentAddress: string = "";
   @Input() tokenArray: IMetroToken[] | null = null;
-  @Input() isSearchingTokens: boolean; //Are we currently searching for tokens? This is used for UI 
+  @Input() isSearchingTokens: boolean; //Are we currently searching for tokens? This is used for UI
+  @Input() currentAddressIndex: number = 0;
 
   @Input() txHistory: IMetroTransaction[] | null = null;
   
   @Output() sendButtonClick = new EventEmitter();
   @Output() connectButtonClick = new EventEmitter();
   @Output() addTokenButtonClick = new EventEmitter();
+  @Output() openAccountSettings = new EventEmitter();
+
 
   @Output() openTxHash = new EventEmitter<string>();
 
@@ -54,6 +57,9 @@ export class SendTabComponent implements OnInit {
   }
   copyAddressToClipboard() {
     navigator.clipboard.writeText(this.currentAddress);
+  }
+  accountSettingsButton() {
+    this.openAccountSettings.emit();
   }
   openTxInExplorer(txHash: any) {
     this.openTxHash.emit(txHash);

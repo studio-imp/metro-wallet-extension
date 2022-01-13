@@ -42,7 +42,6 @@ export class PincodeInputComponent implements OnInit {
 
     if(event.target.value != "") {
       if(event.target.value.match(/^[0-9]+$/) == null) {
-        alert("Only digits allowed!");
         event.target.value = "";
         return;
       }

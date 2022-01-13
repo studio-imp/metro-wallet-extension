@@ -91,6 +91,22 @@
   margin: 3px;
 }
 
+.text_button {
+  color: white;
+  transition-duration: 220ms;
+  cursor: pointer;
+}
+.text_button:hover {
+  transition-duration: 220ms;
+  color: var(--main_color_1);
+  text-shadow: 0px 0px 4px var(--main_color_1);
+}
+.text_button:active {
+  transition-duration: 220ms;
+  color: rgb(185, 0, 56);
+  text-shadow: 0px 0px 4px rgb(185, 0, 56);
+}
+
 .inner_flex_container{
   
   flex: 1;

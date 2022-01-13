@@ -42,6 +42,7 @@ class Tabs {
 export enum Modals {
   VIEW_TRANSACTION_INFO,
   VIEW_CONNECTION_INFO,
+  ACCOUNT_SETTINGS,
   VIEW_TOKEN_INFO,
   ADD_TOKEN,
   NONE,
@@ -100,10 +101,10 @@ export class AppComponent {
   walletStages = WalletUnlockStages;
   currentWalletStage: WalletUnlockStages = this.walletStages.NONE;
   encryptedSeedData: string = '';
-
+  
   //public wallet: WalletState = new WalletState("between trash soccer inflict quit gorilla oblige ordinary ski duty member result train connect surface behind state regular nominee school rice core drink craft");
   public wallet: WalletState | null = null;
-
+  
   public currentWalletAddress: string = "";
   
   ngOnInit() {
@@ -196,6 +197,11 @@ export class AppComponent {
     }
   }
 
+  openAccountSettingsModal() {
+    this.currentModal.modal = this.modals.ACCOUNT_SETTINGS;
+    this.isModalEnabled = true;
+  }
+
   openConnectionModal(tabId: any) {
     if(tabId in this.currentConnections) {
       this.selectedPort = this.currentConnections[tabId];
@@ -234,6 +240,20 @@ export class AppComponent {
   }
   closePopup() {
     this.showPopup = false;
+  }
+
+
+  nextAccount() {
+    if(this.wallet != null) {
+      this.wallet.changeAccount(this.wallet.currentWallet.index + 1);
+      this.currentWalletAddress = this.wallet.currentWallet.wallet.address;
+    }
+  }
+  previousAccount() {
+    if(this.wallet != null && this.wallet.currentWallet.index > 0) {
+      this.wallet.changeAccount(this.wallet.currentWallet.index - 1);
+      this.currentWalletAddress = this.wallet.currentWallet.wallet.address;
+    }
   }
 
 

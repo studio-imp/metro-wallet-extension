@@ -15,8 +15,10 @@
         (sendButtonClick)="setPopup(currentPopup.SEND_POPUP); togglePopup()"
         (connectButtonClick)="setPopup(currentPopup.CONNECT_POPUP); togglePopup()"
         (addTokenButtonClick)="addNewToken()"
+        (openAccountSettings)="openAccountSettingsModal()"
         (openTxHash)="openTxInExplorer($event)"
-        [currentAddress]="currentWalletAddress" [avaxAmount]="wallet.avaxAmountWhole" [tokenArray]="wallet.tokensCache.tokenVault[0].tokens"
+        [currentAddress]="currentWalletAddress" [avaxAmount]="wallet.avaxAmountWhole" [tokenArray]="wallet.tokensCache.tokenVault.tokens"
+        [currentAddressIndex]="wallet.currentWallet.index"
         [txHistory]="wallet.txHistory.history.transactions"
         [isSearchingTokens]="wallet.isSearchingTokens">
         </app-send-tab>
@@ -24,7 +26,7 @@
   
       <div *ngIf="tabs.tab == currentTab.ASSETS_TAB" [@fadeOut]>
         <app-assets-tab 
-        [tokenArray]="wallet.tokensCache.tokenVault[0].tokens"
+        [tokenArray]="wallet.tokensCache.tokenVault.tokens"
         [txHistory]="wallet.txHistory.history.transactions"
         (addTokenButtonClick)="addNewToken()"
         (openTxHash)="openTxInExplorer($event)">
@@ -40,7 +42,7 @@
       </div>
     
       <app-popup [popupState]="popups.popup" [showPopup]="showPopup" (closePopup)="togglePopup()"
-      [tokenArray]="wallet.tokensCache.tokenVault[0].tokens"
+      [tokenArray]="wallet.tokensCache.tokenVault.tokens"
       [currentAvaxAmount]="wallet.avaxAmountWholePrecise"
       [walletState]="wallet"
       [connectedPorts]="arrayOfConnections"
@@ -49,11 +51,16 @@
     </div>
   </div>
   
-  <app-modal-module [showModal]="isModalEnabled"
+  <app-modal-module *ngIf="wallet != null" [showModal]="isModalEnabled"
   (closeModalButton)="closeModal()"
   (deleteConnectionEvent)="deleteConnection($event)"
+  (switchToPreviousAccount)="previousAccount()"
+  (switchToNextAccount)="nextAccount()"
   [currentModal]="currentModal.modal"
-  [connectionInfoPort]="selectedPort">
+  [connectionInfoPort]="selectedPort"
+  [currentAddressIndex]="wallet.currentWallet.index"
+  [currentAccountAddress]="currentWalletAddress"
+  [avaxBalance]="wallet.avaxAmountWhole">
   </app-modal-module>
 
 </div>

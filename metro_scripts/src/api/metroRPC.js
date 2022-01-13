@@ -17,6 +17,12 @@ export const MetroRPC = {
     'REJECT_ACCESS': 'rejectAccess',
     'REQUEST_ACCESS': 'requestAccess',
 
+    //Updates the chainId.
+    'CHANGE_CHAIN_ID': 'changeChainId',
+    //Updates the chainId.
+    'CHANGE_ACCOUNTS': 'changeAccounts',
+
+
     //Closes connection with the specified dApp.
     'CLOSE_CONNECTION': 'closeConnection',
 

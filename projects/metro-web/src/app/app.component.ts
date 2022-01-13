@@ -29,7 +29,7 @@ export class AppComponent {
       this.pages = new Pages(CurrentPages.WALLET);
     } else if(localStorage.getItem("GenerateNewWallet") ==  null) {
       this.pages = new Pages(CurrentPages.INITIALIZE_WALLET);
-      //this.pages = new Pages(CurrentPages.CREATE_NEW_WALLET); // debug reasons
+      this.pages = new Pages(CurrentPages.CREATE_NEW_WALLET); // debug reasons
     } else {
       this.pages = new Pages(CurrentPages.CREATE_NEW_WALLET);
       localStorage.removeItem("GenerateNewWallet");
@@ -42,3 +42,4 @@ export class AppComponent {
     }
   }
 }
+

@@ -58,8 +58,8 @@ export interface IERC721 {
 //This is what we store to "remember/cache" token info per each address. 
 export interface ITokenCache {
     hasSearchedAllTokens: boolean,
-    tokenVault: [{
+    tokenVault: {
         address: string,
         tokens: IMetroToken[]
-    }]
+    }
 }

@@ -146,6 +146,12 @@ injectToContentStream.on('data', (data) => {
   if(data.method === "disconnect") {
     metroState.disconnect();
   }
+  if(data.method === "changeChainId") {
+    metroState.changeChain(data.data);
+  }
+  if(data.method === "changeAccounts") {
+    metroState.changeAccounts(data.data);
+  }
   if(data.method === "eth_getBlockByNumber") {
     ev.emit("eth_getBlockByNumber", data.data);
   }

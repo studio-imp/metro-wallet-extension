@@ -32,7 +32,8 @@
         </p>
     </div>
 
-    <app-seed-phrase-box>
+    <app-seed-phrase-box
+    (generatedSeedphrase)="selectGeneratedSeedphrase($event)">
     </app-seed-phrase-box>
     
     <div style="width: 220px;">
@@ -49,7 +50,7 @@
     
     <div class="shadow_box" style="width: 700px; height: 100px; margin: 25px; justify-content: center; align-items: center; padding: 10px; padding-left: 15px; padding-right: 15px;">
         <p style="color: gray; font-size: 16px;">
-            Please enter your seed phrase while no one is watching.
+            Please enter your seed-phrase seperated by spaces, while no one is watching.
         </p>
     </div>
     
@@ -60,8 +61,10 @@
             </app-input-fancy>
         </div>
     </div>
-    <div style="width: 100px;">
-        <app-default-button (buttonClick)="next()" text="Proceed">
+    <div style="width: 150px; display: flex; flex-direction: row; justify-content: space-evenly;">
+        <app-default-button (buttonClick)="back()" text="Back">
+        </app-default-button>
+        <app-default-button (buttonClick)="next()" text="Next">
         </app-default-button>
     </div>
 

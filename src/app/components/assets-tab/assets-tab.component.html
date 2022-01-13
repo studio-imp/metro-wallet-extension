@@ -3,14 +3,14 @@
 
   <div class="shadow_box darker_background" style="display: flex; height: 390px; justify-content:center; flex-direction: column;">
     
-    <div class="" style="justify-content: center; padding: 3px; align-self: center; display: flex; width: 110px; justify-content: space-evenly; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-      <div (click)="currentAssetTab = assetTabs.TokenList" style="margin-right: 15px; margin-top: 2px;" class="svg_button" style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" [ngClass]="currentAssetTab == assetTabs.TokenList ? 'svg_button_selected' : ''">
+    <div class="" style="justify-content: center; padding-top: 5px; align-self: center; display: flex; width: 110px; justify-content: space-evenly; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+      <div (click)="currentAssetTab = assetTabs.TokenList"  class="svg_button" style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" [ngClass]="currentAssetTab == assetTabs.TokenList ? 'svg_button_selected' : ''">
         &#xf51e;
       </div>
-      <div (click)="currentAssetTab = assetTabs.History" style="margin-top: 2px;" style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.History ? 'svg_button_selected' : ''">
+      <div (click)="currentAssetTab = assetTabs.History"  style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.History ? 'svg_button_selected' : ''">
         &#xf1da;
       </div>
-      <div (click)="currentAssetTab = assetTabs.NFTList" style="margin-top: 2px;" style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.NFTList ? 'svg_button_selected' : ''">
+      <div (click)="currentAssetTab = assetTabs.NFTList"  style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.NFTList ? 'svg_button_selected' : ''">
         &#xf009;
       </div>
     </div>
@@ -30,7 +30,7 @@
               </app-default-button>
             </div>
           </div>
-          <div style="display: flex; margin: 10px; justify-content: center; align-items: center;">
+          <div style="display: flex; margin: 10px; margin-top: 25px; justify-content: center; align-items: center;">
             <div *ngIf="tokenArray != null">
               <svg *ngIf="tokenArray.length == 0" style="filter: drop-shadow(0px 0px 1px rgb(15, 15, 15));" id="svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80" height="80" viewBox="0, 0, 400,398.96907216494844" version="1.1"><g id="svgg"><path id="path0" d="M58.969 43.531 C 36.323 45.843,18.644 62.421,14.176 85.537 L 13.711 87.938 13.649 192.990 C 13.584 304.128,13.551 300.121,14.565 305.142 C 18.835 326.283,36.207 342.285,58.041 345.190 C 61.105 345.597,339.720 345.597,342.784 345.190 C 365.917 342.112,383.149 325.039,386.737 301.640 C 387.173 298.795,387.443 98.048,387.020 91.309 C 385.491 66.968,368.774 48.310,344.522 43.873 L 341.959 43.404 201.340 43.378 C 123.162 43.364,59.943 43.432,58.969 43.531 M320.044 66.918 C 339.940 69.658,355.256 85.199,357.722 105.149 C 358.025 107.597,358.024 281.277,357.721 283.717 C 355.192 304.104,339.224 319.777,318.660 322.059 C 316.116 322.341,84.526 322.343,81.959 322.061 C 61.303 319.790,45.189 303.760,42.891 283.196 C 42.510 279.781,42.612 107.765,42.997 104.804 C 45.537 85.284,60.457 70.005,79.897 67.015 C 83.428 66.472,316.123 66.378,320.044 66.918 M124.055 117.990 C 119.331 123.003,115.205 127.927,115.304 128.433 C 115.434 129.096,138.322 139.126,140.155 139.323 L 141.237 139.439 141.237 138.817 C 141.237 137.517,140.546 136.313,132.825 124.175 C 129.705 119.271,127.035 115.258,126.891 115.258 C 126.747 115.258,125.470 116.487,124.055 117.990 M267.437 124.794 C 257.565 140.314,257.420 140.908,264.178 138.157 C 266.830 137.077,285.313 128.776,285.516 128.574 C 285.925 128.164,274.494 115.258,273.722 115.258 C 273.601 115.258,270.773 119.549,267.437 124.794 M131.087 145.484 C 130.443 145.681,129.726 146.150,128.978 146.861 C 127.338 148.421,100.281 181.376,99.757 182.453 C 98.425 185.187,99.604 187.757,102.644 188.743 C 105.274 189.597,152.966 200.264,154.227 200.280 C 156.699 200.312,157.806 199.232,157.684 196.907 C 157.596 195.239,137.308 149.152,135.743 147.066 C 134.666 145.631,132.740 144.976,131.087 145.484 M267.470 145.357 C 266.541 145.577,265.290 146.482,264.666 147.388 C 264.170 148.106,244.425 192.280,243.382 195.005 C 242.149 198.224,243.335 200.308,246.380 200.278 C 248.176 200.260,297.585 189.049,298.969 188.345 C 301.941 186.834,302.288 183.861,299.844 180.837 C 295.226 175.122,272.124 147.177,271.654 146.737 C 270.414 145.579,268.795 145.044,267.470 145.357 M199.083 235.527 C 198.782 236.142,198.242 238.063,197.852 239.909 C 196.598 245.842,195.677 247.850,192.990 250.515 C 188.682 254.788,183.902 256.152,177.076 255.056 C 172.205 254.274,171.365 256.258,175.615 258.506 C 180.666 261.178,186.802 260.905,195.696 257.614 C 199.799 256.095,200.012 256.094,204.021 257.574 C 205.722 258.203,207.676 258.874,208.363 259.065 L 209.612 259.414 209.937 260.799 C 210.285 262.281,211.362 264.998,211.863 265.659 C 212.340 266.290,214.868 263.561,215.987 261.208 L 216.344 260.456 218.320 260.208 C 222.923 259.628,226.969 257.473,226.765 255.709 C 226.643 254.660,225.947 254.551,222.623 255.061 C 215.739 256.118,211.028 254.740,206.692 250.403 C 204.152 247.862,203.171 245.604,201.773 239.082 C 200.839 234.725,200.011 233.630,199.083 235.527 " stroke="none" fill="#181818" fill-rule="evenodd"></path></g></svg>
               <p *ngIf="tokenArray.length == 0" style="margin: 4px; font-weight: bold; margin-bottom: 10px; margin-top: 0px; font-size: 13px; color: rgb(15, 15, 15);">
@@ -53,7 +53,7 @@
               (moduleClick)="openTxInExplorer($event)">
               </app-tx-history-module>
           </div>
-          <div *ngIf="txHistory != null && txHistory.length == 0">
+          <div *ngIf="txHistory != null && txHistory.length == 0" style="margin-top: 25px;">
             <svg *ngIf="txHistory.length == 0" style="filter: drop-shadow(0px 0px 1px rgb(15, 15, 15));" id="svg"
               xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80" height="80"
               viewBox="0, 0, 400,398.96907216494844" version="1.1">

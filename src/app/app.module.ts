@@ -27,6 +27,7 @@ import { SettingsTabComponent } from './components/settings-tab/settings-tab.com
 import { ChainIDSelectionComponent } from './components/chain-id-selection/chain-id-selection.component';
 import { DAppConnectionModuleComponent } from './components/d-app-connection-module/d-app-connection-module.component';
 import { ViewConnectionInfoComponent } from './components/modal-module/view-connection-info/view-connection-info.component';
+import { AccountSettingsModalComponent } from './components/modal-module/account-settings-modal/account-settings-modal.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { ViewConnectionInfoComponent } from './components/modal-module/view-conn
     ChainIDSelectionComponent,
     DAppConnectionModuleComponent,
     ViewConnectionInfoComponent,
+    AccountSettingsModalComponent,
   ],
   imports: [
     BrowserModule,

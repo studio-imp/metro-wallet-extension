@@ -1,13 +1,22 @@
 
 <div class="container_flex" style="height: fit-content;">
   <div class="shadow_box" style="height: 80px;">
-    <div class="inner_flex_container flex_row" >
-      <h1 class="chain_denominator" style="width: 100%; margin-bottom: 3px">
-      C chain | Address #0
-      </h1>
+
+    <div class="inner_flex_container">
+      
+      <div style="display: flex; flex-direction: row; width: 100%; padding-left: 10px; padding-right: 10px;">
+        <h1 class="chain_denominator" style="width: 100%; margin-bottom: 3px; align-self: center;">
+        <span style="color: rgb(155, 132, 255);">C chain</span> | Address #{{currentAddressIndex}}
+        </h1>
+        <div (click)="accountSettingsButton()" class="text_button" style="align-self: flex-end; font-family: fonticon_awesome; font-size: 16px;">
+          &#xf0c9;
+        </div>
+      </div>
+
       <h2 style="align-self: center; justify-self: center; width: 100%; height: 22px; font-size: 20px; margin-top: 0px; padding-top: 0px; margin-bottom: 0px;">
         {{avaxAmount}} <span style="color: rgb(255, 0, 64); font-size: 12px">🛆</span>
       </h2>
+
       <h5 (click)="copyAddressToClipboard()" (mouseenter)="toggleHover(true)"(mouseleave)="toggleHover(false)" class="address" style="width: 100%">
         <code *ngIf="!displayHoverText">
           {{currentAddress}}
@@ -16,6 +25,7 @@
           ▲ Click To Copy ▲
         </code>
       </h5>
+
     </div>
   </div>
 
@@ -80,7 +90,7 @@
               (moduleClick)="openTxInExplorer($event)">
               </app-tx-history-module>
           </div>
-          <div *ngIf="txHistory != null && txHistory.length == 0">
+          <div *ngIf="txHistory != null && txHistory.length == 0" style="margin-top: 10px;">
             <svg *ngIf="txHistory.length == 0" style="filter: drop-shadow(0px 0px 1px rgb(15, 15, 15));" id="svg"
               xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80" height="80"
               viewBox="0, 0, 400,398.96907216494844" version="1.1">

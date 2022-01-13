@@ -4,7 +4,6 @@ import { BigNumberish, utils, Wallet } from 'ethers';
 import { hdkey } from "ethereumjs-wallet";
 import { BigNumber } from 'bignumber.js';
 import { EVMAPI } from "avalanche/dist/apis/evm";
-import { hexlify } from "@ethersproject/bytes";
 import { IMetroToken, IToken, ITokenCache, ITokenList } from "./tokens";
 import { addNewTransaction, ITransactionHistory, TransactionStates, IMetroTransaction} from "./txHistory";
 import { RequestResponseData } from "avalanche/dist/common";
@@ -24,6 +23,8 @@ import { MetroRPC } from "metro_scripts/src/api/metroRPC";
 
 /*-- Settings and cached information about the wallet --*/
 export interface IWalletSettings {
+    currentAccountIndex: number
+    highestAccountIndex: number
 }
 
 //class Account represents a pubkey/privkey/address at a certain derivation path index.
@@ -87,17 +88,21 @@ export class WalletState {
     public currentWallet: Account;
     private cChain: EVMAPI;
 
+    private hdManager: hdkey;
+
     public isSearchingTokens: boolean = false; //Are we currently searching if the address has tokens in the token list?
 
     public tokensCache: ITokenCache = {
         hasSearchedAllTokens: false,
-        tokenVault: [{
+        tokenVault: {
             address: "",
             tokens: []
-        }]
+        }
     };
 
     public walletSettings: IWalletSettings = {
+        currentAccountIndex: 0,
+        highestAccountIndex: 0,
     }
 
     public txHistory: ITransactionHistory;
@@ -116,30 +121,37 @@ export class WalletState {
         }else {
             localStorage.setItem("NetworkSettings", JSON.stringify(this.nodeDetails));
         }
+        if(localStorage.getItem("WalletSettings") != null) {
+            this.walletSettings = JSON.parse(localStorage.getItem("WalletSettings") || "{}");
+        }else {
+            this.walletSettings = {
+                currentAccountIndex: 0,
+                highestAccountIndex: 0
+            }
+        }
         this.walletData.avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
 
         localStorage.setItem("NetworkSettings", JSON.stringify(this.nodeDetails));
 
         let phrase = mnemonicPhrase == null ? generateMnemonic(256) : mnemonicPhrase;
 
-        let hdWallet = hdkey.fromMasterSeed(mnemonicToSeedSync(phrase));
-        let tmpWallet = hdWallet.derivePath("m/44'/60'/0'/0/" + 0).getWallet();
-        this.walletData.accounts.push(new Account(Buffer.from(tmpWallet.getPrivateKey()), 0));
+        this.hdManager = hdkey.fromMasterSeed(mnemonicToSeedSync(phrase));
+        for(let i: number = 0; i <= this.walletSettings.highestAccountIndex; i++) {
 
-        this.currentWallet = this.walletData.accounts[0];
+            let tmpWallet = this.hdManager.derivePath("m/44'/60'/0'/0/" + i).getWallet();
+            this.walletData.accounts.push(new Account(Buffer.from(tmpWallet.getPrivateKey()), i));
+        }
+        this.currentWallet = this.walletData.accounts[this.walletSettings.currentAccountIndex];
+        console.log("Index: ");
+        console.log(this.currentWallet.index);
         this.cChain = this.walletData.avalanche.CChain();
 
-        if(localStorage.getItem("WalletSettings") != null) {
-            this.walletSettings = JSON.parse(localStorage.getItem("WalletSettings") || "{}");
-        }else {
-            this.walletSettings = {
-            }
-        }
+
 
         //localStorage.removeItem("TokenCache");  //debug purposes...
-        if(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID) != null) {
-            this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID) || "{}"); 
-            if(this.tokensCache.hasSearchedAllTokens == true && this.tokensCache.tokenVault[0].tokens.length > 0) {
+        if(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) != null) {
+            this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}");
+            if(this.tokensCache.hasSearchedAllTokens == true && this.tokensCache.tokenVault.tokens.length > 0) {
                 this.updateCurrentTokens();
             }else if (this.tokensCache.hasSearchedAllTokens == false){
                 this.isSearchingTokens = true;
@@ -149,8 +161,8 @@ export class WalletState {
             this.isSearchingTokens = true;
             this.updateAllTokens();
         }
-        if(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID)) {
-            this.txHistory = JSON.parse(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID) || '{}');
+        if(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index)) {
+            this.txHistory = JSON.parse(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || '{}');
         }else {
             this.txHistory = {
                 history: {
@@ -158,7 +170,7 @@ export class WalletState {
                     transactions: []
                 }
             }
-            localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID, JSON.stringify(this.txHistory));
+            localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.txHistory));
         }
 
         navigator.serviceWorker.onmessage = (event) => {
@@ -171,7 +183,7 @@ export class WalletState {
                     }
 
                     this.txHistory = newHistory;
-                    localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID, JSON.stringify(newHistory));
+                    localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(newHistory));
 
                     navigator.serviceWorker.controller?.postMessage({
                         method: MetroRPC.CLEAR_PENDING_TRANSACTIONS
@@ -190,14 +202,14 @@ export class WalletState {
     //This is temporary.
     public async updateAllTokensRec() {
         setInterval(async () => {
-            let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID) || "{}");
+            let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}");
             this.updateAvaxBalance();
-            for(let i = 0; i < currentTokensList.tokenVault[0].tokens.length; i++) {
+            for(let i = 0; i < currentTokensList.tokenVault.tokens.length; i++) {
 
                 let tx = {
                     /*getBalance()*/               /*Padding*/          /*Address we want the balance of*/
                     "data": "0x70a08231" + "000000000000000000000000" + this.getCurrentAddress().slice(2),
-                    "to": currentTokensList.tokenVault[0].tokens[i].tokenAddress,
+                    "to": currentTokensList.tokenVault.tokens[i].tokenAddress,
                 }
                 let response = await this.cChain.callMethod("eth_call", [tx, "latest"], "ext/bc/C/rpc").then((response)=>{
                     return response;
@@ -207,22 +219,22 @@ export class WalletState {
                     return error;
                 });
 
-                let divNum = new BigNumber(10).pow(new BigNumber(Number(currentTokensList.tokenVault[0].tokens[i].tokenDecimals))).precision(6);
+                let divNum = new BigNumber(10).pow(new BigNumber(Number(currentTokensList.tokenVault.tokens[i].tokenDecimals))).precision(6);
                 
                 let amount: number = new BigNumber(String(response.data['result'])).div(divNum).precision(6).toNumber();
                 //Add a token to the cache only if the balance is more than 0.
-                currentTokensList.tokenVault[0].tokens[i].tokenBalance = amount;
+                currentTokensList.tokenVault.tokens[i].tokenBalance = amount;
 
-                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID, JSON.stringify(currentTokensList));
+                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(currentTokensList));
             }
-            this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID) || "{}");
+            this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}");
         }, 3000);
     }
 
     //Checks balance of the Current tokens that the wallet already has an amount (> 0) of.
     public async updateCurrentTokens() {
         console.log("Updating balance of current tokens.");
-        let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID) || "{}");
+        let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}");
 
         let i: number = 0;
         let getTokenBalance = async () => {
@@ -231,38 +243,38 @@ export class WalletState {
                 let tx = {
                     /*getBalance()*/               /*Padding*/          /*Address we want the balance of*/
                     "data": "0x70a08231" + "000000000000000000000000" + this.getCurrentAddress().slice(2),
-                    "to": currentTokensList.tokenVault[0].tokens[i].tokenAddress,
+                    "to": currentTokensList.tokenVault.tokens[i].tokenAddress,
                 }
                 let response = await this.cChain.callMethod("eth_call", [tx, "latest"], "ext/bc/C/rpc").then((response)=>{
                     return response;
                 }).catch((error)=> {
                     i++;
-                    console.log("uwu: " + error);
+                    console.log("fking uwu: " + error);
                     getTokenBalance();
                     return {
                         "data": error
                     }
                 });
                 
-                let divNum = new BigNumber(10).pow(new BigNumber(Number(currentTokensList.tokenVault[0].tokens[i].tokenDecimals))).precision(6);
+                let divNum = new BigNumber(10).pow(new BigNumber(Number(currentTokensList.tokenVault.tokens[i].tokenDecimals))).precision(6);
                 
                 //console.log(new BigNumber(String(response.data['result'])).div(divNum).precision(6)
                 // + " amount in " + tokenList.tokens[i].name);
                 let amount: number = new BigNumber(String(response.data['result'])).div(divNum).precision(6).toNumber();
                 //Add a token to the cache only if the balance is more than 0.
-                currentTokensList.tokenVault[0].tokens[i].tokenBalance = amount;
-                console.log("Updating Token: " + currentTokensList.tokenVault[0].tokens[i].tokenName + " to " +
-                 currentTokensList.tokenVault[0].tokens[i].tokenBalance);
+                currentTokensList.tokenVault.tokens[i].tokenBalance = amount;
+                console.log("Updating Token: " + currentTokensList.tokenVault.tokens[i].tokenName + " to " +
+                 currentTokensList.tokenVault.tokens[i].tokenBalance);
 
-                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID, JSON.stringify(currentTokensList));
+                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(currentTokensList));
 
                 i++;
-                if(i < currentTokensList.tokenVault[0].tokens.length) {
+                if(i < currentTokensList.tokenVault.tokens.length) {
                     getTokenBalance();
                 }
             }, 100)
         };
-        if(i < currentTokensList.tokenVault[0].tokens.length) {
+        if(i < currentTokensList.tokenVault.tokens.length) {
             getTokenBalance();
         }
     }
@@ -273,10 +285,10 @@ export class WalletState {
         let tokenList: ITokenList = require("../MetroTokenList.json");
         this.tokensCache = {
             hasSearchedAllTokens: false,
-            tokenVault: [{
+            tokenVault: {
                 address: this.getCurrentAddress(),
                 tokens: []
-            }],
+            },
         };
         let i: number = 0;
         let getTokenBalance = async () => {
@@ -291,7 +303,7 @@ export class WalletState {
                     return response;
                 }).catch((error)=> {
                     i++;
-                    console.log("uwu an error has occurred: " + error);
+                    console.log("an error has occurred: " + error);
                     return {
                         "data": error
                     }
@@ -304,7 +316,7 @@ export class WalletState {
                 let amount: number = new BigNumber(String(response.data['result'])).div(divNum).precision(6).toNumber();
                 //Add a token to the cache only if the balance is more than 0.
                 if(amount > 0.0) {
-                    this.tokensCache?.tokenVault[0].tokens.push({
+                    this.tokensCache?.tokenVault.tokens.push({
                         tokenName: tokenList.tokens[i].name,
                         tokenAddress: tokenList.tokens[i].address,
                         tokenBalance: amount,
@@ -314,14 +326,14 @@ export class WalletState {
                     });
                     console.log("Discovered token from Metro token list + User Defined Tokens: " + tokenList.tokens[i].name);
                 }
-                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID, JSON.stringify(this.tokensCache));
+                localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.tokensCache));
                 console.log("Searched for: " + tokenList.tokens[i].name);
                 i++;
                 if(i < tokenList.tokens.length) {
                     getTokenBalance();
                 }else {
                     this.tokensCache.hasSearchedAllTokens = true;
-                    localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID, JSON.stringify(this.tokensCache));
+                    localStorage.setItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.tokensCache));
                     this.isSearchingTokens = false;
                 }
             }, 100)
@@ -368,8 +380,8 @@ export class WalletState {
         this.cChain = this.walletData.avalanche.CChain();
         localStorage.setItem("NetworkSettings", JSON.stringify(this.nodeDetails));
 
-        if(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID)) {
-            this.txHistory = JSON.parse(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID) || '{}');
+        if(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index)) {
+            this.txHistory = JSON.parse(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || '{}');
         }else {
             this.txHistory = {
                 history: {
@@ -377,8 +389,39 @@ export class WalletState {
                     transactions: []
                 }
             }
-            localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID, JSON.stringify(this.txHistory));
+            localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.txHistory));
         }
+    }
+
+    public changeAccount(accountIndex: number) {
+        if(accountIndex >= this.walletData.accounts.length) {
+            let tmpWallet = this.hdManager.derivePath("m/44'/60'/0'/0/" + accountIndex).getWallet();
+            this.walletData.accounts.push(new Account(Buffer.from(tmpWallet.getPrivateKey()), accountIndex));
+            this.walletSettings.highestAccountIndex = accountIndex;
+        }
+        this.walletSettings.currentAccountIndex = accountIndex;
+        localStorage.setItem("WalletSettings", JSON.stringify(this.walletSettings));
+
+        
+        this.currentWallet = this.walletData.accounts[accountIndex];
+        console.log(this.currentWallet.wallet.address);
+
+        if(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) != null) {
+            this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}"); 
+            if(this.tokensCache.hasSearchedAllTokens == true && this.tokensCache.tokenVault.tokens.length > 0) {
+                this.updateCurrentTokens();
+            }else if (this.tokensCache.hasSearchedAllTokens == false){
+                this.isSearchingTokens = true;
+                this.updateAllTokens();
+            }
+        }else {
+            this.isSearchingTokens = true;
+            this.updateAllTokens();
+        }
+        navigator.serviceWorker.controller?.postMessage({
+            method: MetroRPC.CHANGE_ACCOUNTS,
+            accounts: [this.currentWallet.wallet.address],
+        });
     }
     public resetTxHistory() {
         this.txHistory = {
@@ -387,7 +430,7 @@ export class WalletState {
                 transactions: [],
             }
         }
-        localStorage.removeItem("TransactionHistory" + this.nodeDetails.CHAIN_ID);
+        localStorage.removeItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index);
     }
 
 
@@ -510,7 +553,6 @@ export class WalletState {
                data: '0x',
            }
        } else { //Transfer ERC20 token
-        console.log("sending token");
             //I know, very computationally heavy way of doing this, idc for now, most of the code is temporary...
             let tokenDecimals = parseInt((await getTokenDecimals(token.tokenAddress)).data.result, 16);
             let amountToSend = new BigNumber(amount).times(new BigNumber('10').pow(tokenDecimals)).toString(16).padStart(64, '0');
@@ -660,7 +702,7 @@ export async function getTokenDecimals(tokenAddress: string): Promise<RequestRes
 /**
  * Adds a new token to the list, I will change the entire behaviour of the token list eventually so this is temporary.
  */
-export function addTokenToList(token: IToken) {
+export function addTokenToList(token: IToken, addressIndex: number) {
 
     let nodeDetails= {
         IP: 'api.avax-test.network',
@@ -675,9 +717,9 @@ export function addTokenToList(token: IToken) {
         localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
     }
 
-    let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + nodeDetails.CHAIN_ID) || "{}");
+    let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + nodeDetails.CHAIN_ID + "_" + addressIndex) || "{}");
 
-    currentTokensList.tokenVault[0].tokens.push({
+    currentTokensList.tokenVault.tokens.push({
         tokenName: token.name,
         tokenSymbol: token.symbol,
         tokenAddress: token.address,
@@ -686,7 +728,7 @@ export function addTokenToList(token: IToken) {
         tokenLogoURI: token.logoURI != "" ? token.logoURI : "",
     });
 
-    localStorage.setItem("TokenCache" + nodeDetails.CHAIN_ID, JSON.stringify(currentTokensList));
+    localStorage.setItem("TokenCache" + nodeDetails.CHAIN_ID + "_" + addressIndex, JSON.stringify(currentTokensList));
 }
 
 

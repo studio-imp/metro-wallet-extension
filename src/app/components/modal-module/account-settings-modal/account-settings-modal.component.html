@@ -1,0 +1,47 @@
+<div class="container_flex" style="justify-content: flex-start; align-items: center; flex-direction: column;">
+
+    <div style="margin: 10px; margin-top: 25px; margin-bottom: 12px; width: auto;">
+        <h1 style="text-align: center;">Selected Account</h1>
+        <hr>
+    </div>
+
+    <div class="shadow_box" style="margin: 10px; box-shadow: 0px 0px 7px black; height: auto; padding: 5px;">
+
+        <h3 style="text-align: left;">
+            Account: <span class="glowy_text" >#{{accountIndex}}</span>
+        </h3>
+        <h3 style="text-align: left;">
+            AVAX: <span class="glowy_text">{{avaxBalance}}</span>
+        </h3>
+        <h3 style="text-align: left;">
+            Derivation Path: <span class="glowy_text">m/44'/60'/0'/0/{{accountIndex}}</span>
+        </h3>
+
+        <hr>
+
+        <h4>
+            You can create new accounts and switch between them with the buttons below. You can create any number of accounts. <br> <br>
+        </h4>
+
+        <h5 class="address" style="width: auto">
+            <code>
+                {{accountAddress}}
+            </code>
+        </h5>
+
+    </div>
+
+    <div style="display: flex; width: 90%; justify-content: space-between;">
+        <app-default-button [height]="35" [width]="135" text="Previous" (buttonClick)="previousAccount()">
+        </app-default-button>
+        <app-default-button [height]="35" [width]="135" text="Next" (buttonClick)="nextAccount()">
+        </app-default-button>
+    </div>
+
+    <div style="position: absolute; left: 5px; top: 440px;">
+        <div style="display: flex; width: 320px; justify-content: space-evenly;">
+            <app-default-button [height]="35" [width]="135" (buttonClick)="closeModal()" text="Return">
+            </app-default-button>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@
     </div>
   </div>
   <!-- When we need to initialize the wallet -->
-  <div [ngClass]="pages.page == currentPage.INITIALIZE_WALLET ? 'show' : 'hide'" class="container_flex" style="flex-direction: column; width: 100vw; height: 100vh;">
+  <div *ngIf="pages.page != currentPage.CREATE_NEW_WALLET " [ngClass]="pages.page == currentPage.INITIALIZE_WALLET ? 'show' : 'hide'" class="container_flex" style="flex-direction: column; width: 100vw; height: 100vh;">
     <!--
 
     -->

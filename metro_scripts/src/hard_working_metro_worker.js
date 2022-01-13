@@ -191,6 +191,28 @@ self.addEventListener("message", (event) => {
             data: event.data.response
         });
     }
+    //Update chainId to all ports.
+    if(event.data && event.data.method === MetroRPC.CHANGE_CHAIN_ID) {
+        let values = Object.values(currentlyConnectedPorts);
+        for(let i = 0; i < values.length; i++) {
+            values[i].postMessage({
+                method: "changeChainId",
+                data: event.data.chainId
+            });
+
+        }
+    }
+    //Update accounts to all ports.
+    if(event.data && event.data.method === MetroRPC.CHANGE_ACCOUNTS) {
+        let values = Object.values(currentlyConnectedPorts);
+        for(let i = 0; i < values.length; i++) {
+            values[i].postMessage({
+                method: "changeAccounts",
+                data: event.data.accounts
+            });
+
+        }
+    }
     if(event.data && event.data.method === "closePopup") {
         extension.windows.remove(currentPopup.id);
     }

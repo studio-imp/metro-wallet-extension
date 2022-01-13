@@ -21,6 +21,8 @@ export enum OnboardingPhase {
 export class GenerateNewWalletComponent implements OnInit {
   seedPhrase: string = "";
 
+  generatedSeedphrase: string = "";
+
   tabs = OnboardingPhase;
   currentTab: OnboardingPhase = OnboardingPhase.INTRODUCTION;
 
@@ -54,6 +56,13 @@ export class GenerateNewWalletComponent implements OnInit {
     }
   }
 
+  selectGeneratedSeedphrase(event: string) {
+    this.generatedSeedphrase = event;
+  }
+
+  back() {
+    this.currentTab = this.tabs.WRITE_DOWN_SEED;
+  }
   next() {
 
     if(this.currentTab == this.tabs.INTRODUCTION) {
@@ -66,7 +75,7 @@ export class GenerateNewWalletComponent implements OnInit {
     }
 
     if(this.currentTab == this.tabs.SEED_PHRASE) {
-      if (validateMnemonic(this.seedPhrase) == false) {
+      if (validateMnemonic(this.seedPhrase) == false || this.seedPhrase != this.generatedSeedphrase) {
         alert("Invalid Seed Phrase!");
       } else {
         this.currentTab = this.tabs.PASSWORD;

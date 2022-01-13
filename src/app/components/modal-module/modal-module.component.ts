@@ -13,9 +13,16 @@ export class ModalModuleComponent implements OnInit {
 
   @Input() connectionInfoPort: any = null;
 
+  @Input() currentAddressIndex: number = 0;
+  @Input() currentAccountAddress: string = 'loading';
+  @Input() avaxBalance: string = '0';
+
+
+
+  @Output() switchToNextAccount = new EventEmitter();
+  @Output() switchToPreviousAccount = new EventEmitter();
 
   @Output() closeModalButton = new EventEmitter();
-
   @Output() deleteConnectionEvent = new EventEmitter<number>();
 
   modals = Modals;
@@ -24,6 +31,13 @@ export class ModalModuleComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  nextAccount() {
+    this.switchToNextAccount.emit();
+  }
+  previousAccount() {
+    this.switchToPreviousAccount.emit();
   }
 
   closeModal() {

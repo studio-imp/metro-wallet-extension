@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Buffer } from 'buffer';
 import { utils } from 'ethers';
 import { getTokenName, getTokenDecimals, getTokenSymbol, addTokenToList } from 'src/metro_backend/walletState';
@@ -24,6 +24,8 @@ class CurrentModal {
   styleUrls: ['./add-new-token.component.scss']
 })
 export class AddNewTokenComponent implements OnInit {
+
+  @Input() currentAddressIndex: number = 0;
 
   searchStates = TokenSearchStates; // Need to have a reference to the enum so we can use.
   currentSearchState: TokenSearchStates = TokenSearchStates.NO_ADDRESS;
@@ -100,7 +102,7 @@ export class AddNewTokenComponent implements OnInit {
         symbol: this.tokenSymbol,
         decimals: this.tokenDecimals,
         logoURI: ""
-      });
+      }, this.currentAddressIndex);
     }
     this.closeModal();
   }
