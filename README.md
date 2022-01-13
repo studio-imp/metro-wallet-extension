@@ -7,7 +7,8 @@ Metro has three branches: `Master`, `Nightly` and `Dev`.
 
 * `Master` - Release builds which are the most stable builds, as well as the builds that are shipped on the chrome extension store.
 
-* `Nightly` - Builds that won't break easily, but contain the bleeding-edge features that Metro has which aren't tested enough in order to be released.
+* `Nightly` - (NOT YET USED) - Bleeding Edge metro, completely new UI framework (Vue), Most code in WASM compiled from Rust, this is the most
+            exciting branch!
 
 * `Dev` - Rolling updates, might have broken features and tests... This is the development branch where all the crazy shit happens...
 
