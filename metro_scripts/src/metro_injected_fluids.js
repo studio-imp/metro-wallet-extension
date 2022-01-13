@@ -1,5 +1,6 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
+import { once } from 'events';
 import {MetroRequest} from './api/metroRPC.js';
 
 /* --- Note # xavax # we are one @
@@ -15,6 +16,7 @@ import {MetroRequest} from './api/metroRPC.js';
 window.ethereum = {
   isConnected: () => isConnected(),
   on: (event, callback) => on(event, callback),
+  once: (event, callback) => onceE(event, callback),
   off: (event, callback) => removeListener(event, callback),
   removeListener: (event, callback) => removeListener(event, callback),
   request: ({method, params}) => request({method, params}),
@@ -427,6 +429,9 @@ function request({method, params}) {
 function on(event, callback) {
   ev.on(event, callback);
 }
+function onceE(event, callback) {
+  ev.once(event, callback);
+}
 function send(...args) {
   return request({
     method: args[0],
@@ -437,7 +442,7 @@ function enable() {
   return request({method: "eth_requestAccounts"});
 }
 function sendAsync(request, callback) {
-  console.error("sendAsync is deprecated... not supported...");
+  console.error("sendAsync is deprecated... not supported. Please use `ethereum.request()` instead.");
 }
 function isConnected() {
   return metroState.isConnectedToWallet;

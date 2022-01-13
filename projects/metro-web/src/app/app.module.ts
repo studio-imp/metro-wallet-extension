@@ -22,7 +22,7 @@ import { HoverToDisplayWordComponent } from './components/hover-to-display-word/
     PincodeInputComponent,
     GenerateNewWalletComponent,
     SeedPhraseBoxComponent,
-    HoverToDisplayWordComponent
+    HoverToDisplayWordComponent,
   ],
   imports: [
     BrowserModule,

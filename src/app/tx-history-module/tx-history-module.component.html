@@ -1,9 +1,11 @@
 <div style="display: flex; flex-direction: column; box-sizing: border-box; width: auto;">
 
-    <div (click)="clickModule()" class="module_box">
-        <img class="module_icon" src="./assets/icons/SendArrow.png"> <!-- this icon is shit, I know... its temporary! -->
-        <div class="left_label">
-            {{transaction.txType}}
+    <div (click)="clickModule()" class="module_box" style="padding: 4px; padding-top: 6px;">
+        <div class="module_icon">
+            &#xf3bf;
+        </div>
+        <div *ngIf="transaction.txType == 'SEND ASSET'" class="left_label">
+            Sent Asset
         </div>
         <div class="right_label">
             {{transaction.txAmount}} {{transaction.assetSymbol}}

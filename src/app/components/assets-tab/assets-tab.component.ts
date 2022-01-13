@@ -2,6 +2,11 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { IMetroToken } from 'src/metro_backend/tokens';
 import { IMetroTransaction } from 'src/metro_backend/txHistory';
 
+enum AssetTabs {
+  History,
+  TokenList,
+  NFTList,
+}
 
 @Component({
   selector: 'app-assets-tab',
@@ -13,6 +18,9 @@ export class AssetsTabComponent implements OnInit {
   @Input() isEnabled: boolean = false;
   
   isHistoryTabEnabled: boolean;
+
+  assetTabs = AssetTabs;
+  currentAssetTab: AssetTabs = this.assetTabs.TokenList;
   
   @Input() avaxAmount: string = "0.00";
   @Input() tokenArray: IMetroToken[] | null = null;

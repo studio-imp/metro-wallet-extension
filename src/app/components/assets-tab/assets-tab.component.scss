@@ -107,24 +107,27 @@
 
 .svg_button {
   fill: rgb(221, 221, 221);
+  color: rgb(221, 221, 221);
   transition-duration: 220px;
 }
 .svg_button:hover {
   transition-duration: 220px;
   fill: var(--main_color_1);
-  text-shadow: 0px 0px 5px var(--main_color_1);
+  color: var(--main_color_1);
   filter: drop-shadow(0px 0px 5px var(--main_color_1));
   cursor: pointer;
 }
 .svg_button:active {
   transition-duration: 220px;
   fill: rgb(180, 0, 60);
+  color: rgb(180, 0, 60);
   filter: drop-shadow(0px 0px 5px rgb(180, 0, 60));
   cursor: pointer;
 }
 .svg_button_selected {
   transition-duration: 220px;
   fill: var(--main_color_1);
+  color: var(--main_color_1);
   filter: drop-shadow(0px 0px 5px var(--main_color_1));
 }
 

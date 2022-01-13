@@ -683,7 +683,7 @@ export function addTokenToList(token: IToken) {
         tokenAddress: token.address,
         tokenDecimals: token.decimals,
         tokenBalance: 0,
-        tokenLogoURI: token.logoURI != "" ? token.logoURI : "https://snowtrace.io/images/main/empty-token.png",
+        tokenLogoURI: token.logoURI != "" ? token.logoURI : "",
     });
 
     localStorage.setItem("TokenCache" + nodeDetails.CHAIN_ID, JSON.stringify(currentTokensList));
