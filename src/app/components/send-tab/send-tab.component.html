@@ -83,7 +83,7 @@
       <h4 *ngIf="txHistory != null && txHistory.length > 0 && isHistoryTabEnabled == true" style="margin-top: 10px; margin-bottom: 0px;">
         {{txHistory.length}} recorded Txs
       </h4>
-      <div class="item_list" *ngIf="isHistoryTabEnabled == true">
+      <div class="item_list" *ngIf="isHistoryTabEnabled == true" style="margin-bottom: 3px;">
         <div *ngIf="txHistory != null">
           <div *ngFor="let tx of txHistory">
               <app-tx-history-module [transaction]="tx"

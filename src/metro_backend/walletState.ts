@@ -8,7 +8,9 @@ import { IMetroToken, IToken, ITokenCache, ITokenList } from "./tokens";
 import { addNewTransaction, ITransactionHistory, TransactionStates, IMetroTransaction} from "./txHistory";
 import { RequestResponseData } from "avalanche/dist/common";
 import { MetroRPC } from "metro_scripts/src/api/metroRPC";
-//import Wallet from 'ethereumjs-wallet';
+import { Account, IUnsignedEVMTransaction, IWalletSettings, IWalletState, IWalletMethods, WalletTypes } from "./IWalletInterfaces";
+import { getTokenDecimals } from "./utils";
+
 
 /* --- Note # xavax # we are one @
     walletState.ts contains interfaces & classes that contain important information about the wallet.
@@ -21,54 +23,11 @@ import { MetroRPC } from "metro_scripts/src/api/metroRPC";
 
 //const tools = BinTools.getInstance();
 
-/*-- Settings and cached information about the wallet --*/
-export interface IWalletSettings {
-    currentAccountIndex: number
-    highestAccountIndex: number
-}
-
-//class Account represents a pubkey/privkey/address at a certain derivation path index.
-export class Account {
-    //mnemonicPhrase: string | undefined;
-    //privateKey: string | undefined;
-    //masterSeed: string | undefined;
-    wallet: Wallet;
-    index: number;
-
-    constructor(privateKey: Buffer, index: number) {
-        this.wallet = new Wallet(privateKey);
-        this.index = index;
-        //this.wallet.signTransaction
-        //this.wallet = Wallet.createRandom();
-    }
-}
-
-//interface IWalletState is an interface with the datatypes that represent the entire wallet state.
-export interface IWalletState {
-    networkID: Number;
-    avalanche: Avalanche; // Avalanche, we have this for AVM purposes, for now use ethers.js for C-chain (EVM) as its better.
-    accounts: Account[];
-}
-
-//An EVM transaction, will probably move this to its seperate file later...
-export interface IUnsignedEVMTransaction {
-    chainId?: number,
-    nonce?: string,
-    to?:  string,
-    from?: string,
-    value?: string | BigNumberish,
-    data?: string,
-    gasLimit?: string,
-    maxFeePerGas?: string,
-    maxPriorityFeePerGas?: string,
-    type?: number
-}
 
 //Much like I mentioned in the note above, this entire thing is a temporary solution. Will likely create some sort of singleton
 //and split this file into more classes n things, read the docs/roadmap...
 //class WalletState contains information about the wallet state, and allows for sending/signing/getting info.
-export class WalletState {
-
+export class WalletState implements IWalletMethods {
 
 
     //Basic node details default to test network
@@ -86,9 +45,9 @@ export class WalletState {
     public avaxAmountWholePrecise: string = '';
 
     public currentWallet: Account;
-    private cChain: EVMAPI;
+    public cChain: EVMAPI;
 
-    private hdManager: hdkey;
+    public hdManager: hdkey;
 
     public isSearchingTokens: boolean = false; //Are we currently searching if the address has tokens in the token list?
 
@@ -103,6 +62,7 @@ export class WalletState {
     public walletSettings: IWalletSettings = {
         currentAccountIndex: 0,
         highestAccountIndex: 0,
+        walletType: WalletTypes.Phrase
     }
 
     public txHistory: ITransactionHistory;
@@ -111,9 +71,9 @@ export class WalletState {
     //wallet = this.hdWallet.derivePath(this.derivation_path + 0).getWallet();
     walletData: IWalletState = {
         networkID: 1,
-        avalanche: new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID),
         accounts: [],
     };
+    avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
         
     constructor(mnemonicPhrase: string | null) {
         if(localStorage.getItem("NetworkSettings")) {
@@ -126,10 +86,11 @@ export class WalletState {
         }else {
             this.walletSettings = {
                 currentAccountIndex: 0,
-                highestAccountIndex: 0
+                highestAccountIndex: 0,
+                walletType: WalletTypes.Phrase,
             }
         }
-        this.walletData.avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
+        this.avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
 
         localStorage.setItem("NetworkSettings", JSON.stringify(this.nodeDetails));
 
@@ -142,9 +103,7 @@ export class WalletState {
             this.walletData.accounts.push(new Account(Buffer.from(tmpWallet.getPrivateKey()), i));
         }
         this.currentWallet = this.walletData.accounts[this.walletSettings.currentAccountIndex];
-        console.log("Index: ");
-        console.log(this.currentWallet.index);
-        this.cChain = this.walletData.avalanche.CChain();
+        this.cChain = this.avalanche.CChain();
 
 
 
@@ -194,7 +153,10 @@ export class WalletState {
         navigator.serviceWorker.controller?.postMessage({
             method: MetroRPC.GET_SUCCESFUL_TRANSACTIONS
         });
-
+        navigator.serviceWorker.controller?.postMessage({
+            method: MetroRPC.SET_NODE_URI,
+            uri: this.nodeDetails.PROTOCOL + "://" + this.nodeDetails.IP + ":" + this.nodeDetails.PORT + "/ext/bc/C/rpc",
+        });
         this.updateAllTokensRec();
     }
 
@@ -376,8 +338,8 @@ export class WalletState {
                 console.error("Custom Chain IDs are coming in the near future! Resolving to main-net...");
             }
         }
-        this.walletData.avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
-        this.cChain = this.walletData.avalanche.CChain();
+        this.avalanche = new Avalanche(this.nodeDetails.IP, this.nodeDetails.PORT, this.nodeDetails.PROTOCOL, this.nodeDetails.NETWORK_ID);
+        this.cChain = this.avalanche.CChain();
         localStorage.setItem("NetworkSettings", JSON.stringify(this.nodeDetails));
 
         if(localStorage.getItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index)) {
@@ -391,6 +353,10 @@ export class WalletState {
             }
             localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.txHistory));
         }
+        navigator.serviceWorker.controller?.postMessage({
+            method: MetroRPC.SET_NODE_URI,
+            uri: this.nodeDetails.PROTOCOL + "://" + this.nodeDetails.IP + ":" + this.nodeDetails.PORT + "/ext/bc/C/rpc",
+        });
     }
 
     public changeAccount(accountIndex: number) {
@@ -404,7 +370,6 @@ export class WalletState {
 
         
         this.currentWallet = this.walletData.accounts[accountIndex];
-        console.log(this.currentWallet.wallet.address);
 
         if(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) != null) {
             this.tokensCache = JSON.parse(localStorage.getItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index) || "{}"); 
@@ -422,6 +387,10 @@ export class WalletState {
             method: MetroRPC.CHANGE_ACCOUNTS,
             accounts: [this.currentWallet.wallet.address],
         });
+        navigator.serviceWorker.controller?.postMessage({
+            method: MetroRPC.SET_NODE_URI,
+            uri: this.nodeDetails.PROTOCOL + "://" + this.nodeDetails.IP + ":" + this.nodeDetails.PORT + "/ext/bc/C/rpc",
+        });
     }
     public resetTxHistory() {
         this.txHistory = {
@@ -430,7 +399,7 @@ export class WalletState {
                 transactions: [],
             }
         }
-        localStorage.removeItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index);
+        localStorage.setItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index, JSON.stringify(this.txHistory));
     }
 
 
@@ -459,7 +428,7 @@ export class WalletState {
      * (eth-call result)
      * 
      */
-    public async sendTx(recipentAddress: string, amount: string, maxFee: string, priorityGasFee: string, gasLimit: string, token: IMetroToken | null) {
+    public async sendTx(recipentAddress: string, amount: string, maxFee: string, priorityGasFee: string, gasLimit: string, token: IMetroToken | null): Promise<RequestResponseData> {
         let tx: IUnsignedEVMTransaction;
         let terx: IMetroTransaction;
         const today = new Date();
@@ -540,7 +509,7 @@ export class WalletState {
     * @param address The address to send to
     * @param token Optionally an ERC20 token transfer, keep as null if just a normal transfer.
     */
-    public async getGasEstimates(recipentAddress: string, amount: string, token: IMetroToken | null) {
+    public async getGasEstimates(recipentAddress: string, amount: string, token: IMetroToken | null): Promise<any> {
 
        let tx: IUnsignedEVMTransaction;
        if(token == null) { //Normal AVAX transfer
@@ -594,147 +563,14 @@ export class WalletState {
             window.open('https://snowtrace.io/tx/' + txHash, '_blank')?.focus();
         }
     }
-}
 
-/* Misc functions that don't depend on the wallet address*/
-/**Retruns the token Name of the given token address, if it exists...
- */
-export async function getTokenName(tokenAddress: string): Promise<RequestResponseData> {
-
-    let nodeDetails= {
-        IP: 'api.avax-test.network',
-        PORT: 443,
-        NETWORK_ID: 1,
-        CHAIN_ID: 43113,
-        PROTOCOL: 'https'
-    };
-    if(localStorage.getItem("NetworkSettings")) {
-        nodeDetails = JSON.parse(localStorage.getItem("NetworkSettings") || "{}");
-    }else {
-        localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
+    deleteWallet() {
+        for(let i = 0; i < this.walletData.accounts.length; i++) {
+            localStorage.removeItem("TokenCache" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index);
+            localStorage.removeItem("TransactionHistory" + this.nodeDetails.CHAIN_ID + "_" + this.currentWallet.index);
+            localStorage.removeItem("NetworkSettings");
+            localStorage.removeItem("WalletSettings");
+            localStorage.removeItem("Vault");
+        }
     }
-
-    let cChain: EVMAPI = new Avalanche(nodeDetails.IP, nodeDetails.PORT, nodeDetails.PROTOCOL, nodeDetails.NETWORK_ID).CChain();
-
-    let tx = {
-                 /*name()*/
-        "data": "0x06fdde03",
-        "to": tokenAddress,
-    }
-    return cChain.callMethod("eth_call", [tx, "latest"], "ext/bc/C/rpc");
-}
-/**Gets the token symbol
- */
-export async function getTokenSymbol(tokenAddress: string): Promise<RequestResponseData> {
-    let nodeDetails= {
-        IP: 'api.avax-test.network',
-        PORT: 443,
-        NETWORK_ID: 1,
-        CHAIN_ID: 43113,
-        PROTOCOL: 'https'
-    };
-    if(localStorage.getItem("NetworkSettings")) {
-        nodeDetails = JSON.parse(localStorage.getItem("NetworkSettings") || "{}");
-    }else {
-        localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
-    }
-
-    let cChain: EVMAPI = new Avalanche(nodeDetails.IP, nodeDetails.PORT, nodeDetails.PROTOCOL, nodeDetails.NETWORK_ID).CChain();
-
-    let tx = {
-                 /*name()*/
-        "data": "0x95d89b41",
-        "to": tokenAddress,
-    }
-    return cChain.callMethod("eth_call", [tx, "latest"], "ext/bc/C/rpc");
-}
-/**
- * Gets the smallest denomination of the token, i.e the smallest "piece" it can be divided into.
- */
-export async function getTokenDecimals(tokenAddress: string): Promise<RequestResponseData> {
-
-
-    let nodeDetails= {
-        IP: 'api.avax-test.network',
-        PORT: 443,
-        NETWORK_ID: 1,
-        CHAIN_ID: 43113,
-        PROTOCOL: 'https'
-    };
-    if(localStorage.getItem("NetworkSettings")) {
-        nodeDetails = JSON.parse(localStorage.getItem("NetworkSettings") || "{}");
-    }else {
-        localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
-    }
-
-    let cChain: EVMAPI = new Avalanche(nodeDetails.IP, nodeDetails.PORT, nodeDetails.PROTOCOL, nodeDetails.NETWORK_ID).CChain();
-
-
-    let tx = {
-                 /*name()*/
-        "data": "0x313ce567",
-        "to": tokenAddress,
-    }
-    return cChain.callMethod("eth_call", [tx, "latest"], "ext/bc/C/rpc");
-}
-
-/**
- * Gets the transaction receipt
- */
- export async function getTransactionReceipt(txHash: string): Promise<RequestResponseData> {
-    let nodeDetails= {
-        IP: 'api.avax-test.network',
-        PORT: 443,
-        NETWORK_ID: 1,
-        CHAIN_ID: 43113,
-        PROTOCOL: 'https'
-    };
-    if(localStorage.getItem("NetworkSettings")) {
-        nodeDetails = JSON.parse(localStorage.getItem("NetworkSettings") || "{}");
-    }else {
-        localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
-    }
-
-    let cChain: EVMAPI = new Avalanche(nodeDetails.IP, nodeDetails.PORT, nodeDetails.PROTOCOL, nodeDetails.NETWORK_ID).CChain();
-    return cChain.callMethod("eth_getTransactionReceipt", [txHash], "ext/bc/C/rpc");
-}
-
-/**
- * Adds a new token to the list, I will change the entire behaviour of the token list eventually so this is temporary.
- */
-export function addTokenToList(token: IToken, addressIndex: number) {
-
-    let nodeDetails= {
-        IP: 'api.avax-test.network',
-        PORT: 443,
-        NETWORK_ID: 1,
-        CHAIN_ID: 43113,
-        PROTOCOL: 'https'
-    };
-    if(localStorage.getItem("NetworkSettings")) {
-        nodeDetails = JSON.parse(localStorage.getItem("NetworkSettings") || "{}");
-    }else {
-        localStorage.setItem("NetworkSettings", JSON.stringify(nodeDetails));
-    }
-
-    let currentTokensList: ITokenCache = JSON.parse(localStorage.getItem("TokenCache" + nodeDetails.CHAIN_ID + "_" + addressIndex) || "{}");
-
-    currentTokensList.tokenVault.tokens.push({
-        tokenName: token.name,
-        tokenSymbol: token.symbol,
-        tokenAddress: token.address,
-        tokenDecimals: token.decimals,
-        tokenBalance: 0,
-        tokenLogoURI: token.logoURI != "" ? token.logoURI : "",
-    });
-
-    localStorage.setItem("TokenCache" + nodeDetails.CHAIN_ID + "_" + addressIndex, JSON.stringify(currentTokensList));
-}
-
-
-//variable vault represents the storage information about the wallet, which is:
-//Encrypted seed phrase
-//Some wallet personalization settings
-export interface IVault{
-    seedPhrase: string;
 }

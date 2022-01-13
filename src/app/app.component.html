@@ -37,7 +37,8 @@
         <app-settings-tab
         [walletState]="wallet"
         (setChainID)="updateChainID($event)"
-        (clearTransactionHistory)="clearTxHistory()">
+        (clearTransactionHistory)="clearTxHistory()"
+        (deleteWallet)="deleteWallet()">
         </app-settings-tab>
       </div>
     

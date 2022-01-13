@@ -3,6 +3,7 @@ import { IMetroToken } from 'src/metro_backend/tokens';
 import { utils } from 'ethers';
 import { WalletState } from 'src/metro_backend/walletState';
 import { BigNumber } from 'bignumber.js'
+import { IWalletMethods, IWalletState } from 'src/metro_backend/IWalletInterfaces';
 
 enum TxStates {
   NONE,
@@ -29,7 +30,7 @@ export class SendPopupComponent implements OnInit {
   @Input() currentAvaxAmount: string = '';
   @Input() tokenArray: IMetroToken[] | null = null;
   @Input() selectedToken: IMetroToken | null = null;
-  @Input() walletState: WalletState | null = null;
+  @Input() walletState: IWalletMethods | null = null;
 
   txStates = TxStates;
   currentTxState: TxStates = TxStates.NONE;

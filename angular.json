@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer", "os", "path"],
             "outputPath": "dist/metro-wallet-extension",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -52,7 +52,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "1000kb",
-                  "maximumError": "3mb"
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -134,7 +134,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer", "os", "path"],
             "outputPath": "dist/metro-wallet-extension/metroWeb",
             "index": "projects/metro-web/src/index.html",
             "main": "projects/metro-web/src/main.ts",
@@ -164,7 +164,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "3mb"
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -246,7 +246,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer"],
+            "allowedCommonJsDependencies": ["stream", "crypto", "avalanche", "buffer", "os", "path"],
             "outputPath": "dist/metro-wallet-extension/metroNotification",
             "index": "projects/metro-notification/src/index.html",
             "main": "projects/metro-notification/src/main.ts",
@@ -276,7 +276,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2000kb",
-                  "maximumError": "3mb"
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",

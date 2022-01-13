@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import { CurrentPopups } from 'src/app/app.component';
+import { IWalletMethods } from 'src/metro_backend/IWalletInterfaces';
 import { IMetroToken } from 'src/metro_backend/tokens';
 import { WalletState } from 'src/metro_backend/walletState';
 
@@ -19,7 +20,7 @@ export class PopupComponent implements OnInit {
   
   @Input() connectedPorts: any;
 
-  @Input() walletState: WalletState | null = null;
+  @Input() walletState: IWalletMethods | null = null;
 
   @Output() closePopup = new EventEmitter();
   @Output() openConnectionModalEvent = new EventEmitter<number>();

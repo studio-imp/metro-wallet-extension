@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import { IWalletMethods } from 'src/metro_backend/IWalletInterfaces';
 import { WalletState } from 'src/metro_backend/walletState';
 
 @Component({
@@ -9,10 +10,11 @@ import { WalletState } from 'src/metro_backend/walletState';
 export class SettingsTabComponent implements OnInit {
 
 
-  @Input() walletState: WalletState | null = null;
+  @Input() walletState: IWalletMethods | null = null;
 
   @Output() setChainID: EventEmitter<number> = new EventEmitter<number>();
   @Output() clearTransactionHistory = new EventEmitter();
+  @Output() deleteWallet = new EventEmitter();
 
 
 
@@ -29,7 +31,7 @@ export class SettingsTabComponent implements OnInit {
     this.clearTransactionHistory.emit();
   }
 
-  resetWallet() {
-    
+  deleteWalletButton() {
+    this.deleteWallet.emit();
   }
 }

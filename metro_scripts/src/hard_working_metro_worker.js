@@ -8,7 +8,7 @@ let currentNotifRequest;
 let currentPopup;
 let currentPort;
 
-let jsonRPCURL = "https://api.avax.network:443/ext/bc/C/rpc";
+let jsonRPCURL = "";
 
 var MetroVault;
 
@@ -66,6 +66,9 @@ self.addEventListener("message", (event) => {
             console.warn("INIT_WORKER_VAULT Called when worker already has a vault initialized!");
         }
     }
+    if(event.data && event.data.method == MetroRPC.SET_NODE_URI) {
+        jsonRPCURL = event.data.uri;
+    }
     if(event.data && event.data.method == MetroRPC.REQUEST_SEED) {
         self.clients.matchAll({
             includeUncontrolled: true,
@@ -103,15 +106,11 @@ self.addEventListener("message", (event) => {
                                         clients[0].postMessage(new MetroRequest(MetroRPC.GET_SUCCESFUL_TRANSACTIONS, {status: 'FOUND', txs: pendingTxs}));
                                     }
                                 }
-
                                 //tx success.
                             } else if(json.result.status == "0x0") {
                                 console.log("Transaction Failed!");
                             }
-                            /*
-                            console.log(json);
-                            console.log("!WORKER RECEIVED TRANSACTION!");
-                             */
+                                                        
                         });
                     });
 

@@ -22,6 +22,7 @@ export const MetroRPC = {
     //Updates the chainId.
     'CHANGE_ACCOUNTS': 'changeAccounts',
 
+    'SET_NODE_URI': 'SET_NODE_URI',
 
     //Closes connection with the specified dApp.
     'CLOSE_CONNECTION': 'closeConnection',

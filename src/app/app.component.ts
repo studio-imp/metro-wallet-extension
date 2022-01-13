@@ -10,8 +10,9 @@ import {
   sequence,
   // ...
 } from '@angular/animations';
-import { IVault, WalletState } from 'src/metro_backend/walletState';
+import {WalletState } from 'src/metro_backend/walletState';
 import { MetroRPC } from 'metro_scripts/src/api/metroRPC';
+import { IWalletMethods } from 'src/metro_backend/IWalletInterfaces';
 
 
 /* --- Note # xavax # we are one @
@@ -103,7 +104,7 @@ export class AppComponent {
   encryptedSeedData: string = '';
   
   //public wallet: WalletState = new WalletState("between trash soccer inflict quit gorilla oblige ordinary ski duty member result train connect surface behind state regular nominee school rice core drink craft");
-  public wallet: WalletState | null = null;
+  public wallet: IWalletMethods | null = null;
   
   public currentWalletAddress: string = "";
   
@@ -157,8 +158,6 @@ export class AppComponent {
     this.tabs = new Tabs(CurrentTabs.SEND_TAB);
     this.popups = new Popups(CurrentPopups.SEND_POPUP);
     this.showPopup = false;
-
-    //Subscribe to events.
   }
 
   initWallet(seedPhrase: string) {
@@ -172,6 +171,7 @@ export class AppComponent {
     this.currentWalletStage = this.walletStages.UNLOCKED;
   }
   
+
   openMetroWeb() {
     window.open('metroWeb/index.html', '_blank')?.focus();
   }
@@ -181,10 +181,11 @@ export class AppComponent {
     }
   }
   public deleteWallet() {
-    localStorage.removeItem("Vault");
+    this.wallet?.deleteWallet();
     navigator.serviceWorker.controller?.postMessage({
       method: MetroRPC.DELETE_VAULT
     });
+    this.currentWalletStage = this.walletStages.ONBOARDING;
   }
   updateChainID(chainID: number) {
     if(this.wallet != null) {

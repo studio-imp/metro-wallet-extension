@@ -3,14 +3,14 @@
 
   <div class="shadow_box darker_background" style="display: flex; height: 390px; justify-content:center; flex-direction: column;">
     
-    <div class="" style="justify-content: center; padding-top: 5px; align-self: center; display: flex; width: 110px; justify-content: space-evenly; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-      <div (click)="currentAssetTab = assetTabs.TokenList"  class="svg_button" style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" [ngClass]="currentAssetTab == assetTabs.TokenList ? 'svg_button_selected' : ''">
+    <div class="" style="justify-content: center; padding: 7px; padding-bottom: 5px; align-self: center; display: flex; width: 118px; justify-content: space-evenly; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+      <div (click)="currentAssetTab = assetTabs.TokenList"  class="svg_button" style="font-family: fonticon_awesome; font-size: 20px; vertical-align: baseline;" [ngClass]="currentAssetTab == assetTabs.TokenList ? 'svg_button_selected' : ''">
         &#xf51e;
       </div>
-      <div (click)="currentAssetTab = assetTabs.History"  style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.History ? 'svg_button_selected' : ''">
+      <div (click)="currentAssetTab = assetTabs.History"  style="font-family: fonticon_awesome; font-size: 20px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.History ? 'svg_button_selected' : ''">
         &#xf1da;
       </div>
-      <div (click)="currentAssetTab = assetTabs.NFTList"  style="font-family: fonticon_awesome; font-size: 22px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.NFTList ? 'svg_button_selected' : ''">
+      <div (click)="currentAssetTab = assetTabs.NFTList"  style="font-family: fonticon_awesome; font-size: 20px; vertical-align: baseline;" class="svg_button" [ngClass]="currentAssetTab == assetTabs.NFTList ? 'svg_button_selected' : ''">
         &#xf009;
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { Component, Input, NgZone } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { MetroRPC } from 'metro_scripts/src/api/metroRPC';
-import { IUnsignedEVMTransaction, WalletState } from 'src/metro_backend/walletState';
+import { WalletState } from 'src/metro_backend/walletState';
 import { TransactionTypes } from 'src/metro_backend/decodeEVMTx';
 import { IFunctionData } from 'src/metro_backend/decodeEVMTx';
 import { decodeTransactionData } from 'src/metro_backend/decodeEVMTx';

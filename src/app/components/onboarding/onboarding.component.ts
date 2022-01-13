@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { IWalletMethods } from 'src/metro_backend/IWalletInterfaces';
+import { WalletStateLedger } from 'src/metro_backend/walletStateLedger';
 
 
 
@@ -26,7 +28,12 @@ export class OnboardingComponent implements OnInit {
   }
 
   openMetroWeb() {
+    localStorage.removeItem("GenerateNewWallet");
     window.open('metroWeb/index.html', '_blank')?.focus();
+  }
+
+  hardwareWallet() {
+    //let w: IWalletMethods = new WalletStateLedger();
   }
 
   generateNewWallet() {

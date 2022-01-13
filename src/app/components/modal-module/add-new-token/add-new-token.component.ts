@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { Buffer } from 'buffer';
 import { utils } from 'ethers';
-import { getTokenName, getTokenDecimals, getTokenSymbol, addTokenToList } from 'src/metro_backend/walletState';
+import { getTokenName, getTokenDecimals, getTokenSymbol, addTokenToList } from 'src/metro_backend/utils';
 
 
 export enum TokenSearchStates {

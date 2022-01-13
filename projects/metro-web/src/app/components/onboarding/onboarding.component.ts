@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { mnemonicToSeedSync, validateMnemonic } from "bip39";
-import { IVault } from 'src/metro_backend/walletState';
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 
 

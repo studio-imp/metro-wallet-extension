@@ -3,8 +3,9 @@ import { CurrentNotification, Notifications } from '../../app.component';
 import { utils } from 'ethers';
 import { TransactionTypes } from 'src/metro_backend/decodeEVMTx';
 import { BigNumber } from 'bignumber.js'
-import { IUnsignedEVMTransaction, WalletState } from 'src/metro_backend/walletState';
-import { getTransactionReceipt } from 'src/metro_backend/walletState';
+import { WalletState } from 'src/metro_backend/walletState';
+import { getTransactionReceipt } from 'src/metro_backend/utils';
+import { IWalletMethods, IUnsignedEVMTransaction } from 'src/metro_backend/IWalletInterfaces';
 
 enum TransactionStates {
   PENDING,
@@ -23,7 +24,7 @@ export class NotificationModuleComponent implements OnInit {
   notifications = Notifications;
   @Input() currentNotification: CurrentNotification = new CurrentNotification(this.notifications.NONE);
 
-  @Input() walletState: WalletState | null = null;
+  @Input() walletState: IWalletMethods | null = null;
   @Input() evmTx: any;
 
   @Input() titleText: string = "Can devs fix";
