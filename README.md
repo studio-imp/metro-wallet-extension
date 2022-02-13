@@ -1,3 +1,5 @@
+## IMPORTANT: Metro is deprecated in-favor of the new multi-chain wallet, https://vulturewallet.net!
+
 # Metro Wallet - Web version
 
 Metro is a wallet ecosystem for Avalanche. This is the web-version of Metro
